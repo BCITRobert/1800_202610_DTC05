@@ -66,7 +66,7 @@ elmo-hikes/
 
 
 ## Contributors
-- **Robert Si** - request 2
+- **Robert Si** - request 3
 - **Edward Kim** - BCIT CST Student, Frontend enthusiast with a knack for creative design. Fun fact: Has a collection of over 50 houseplants.
 - **Robert2** - Double Robert
 
