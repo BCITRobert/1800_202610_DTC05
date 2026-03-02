@@ -3,7 +3,7 @@ class Navbar extends HTMLElement {
         this.innerHTML = `
             <nav class="w-full flex justify-between bg-gray-400 p-5">
                 <img src="./images/menu.svg" alt="Menu" class="w-8 h-8">
-                    <button class="text-white p-2 bg-black rounded-lg">Login/Sign up</button>
+                <button id="goToLogin" class="text-white p-2 bg-black rounded-lg">Login/Sign up</button>
             </nav>
         `;
     }
