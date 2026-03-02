@@ -1,15 +1,5 @@
-// src/authentication.js
-// ------------------------------------------------------------
-// Part of the COMP1800 Projects 1 Course (BCIT).
-// Starter code provided for students to use and adapt.
-// Contains reusable Firebase Authentication functions
-// (login, signup, logout, and auth state checks).
-// -------------------------------------------------------------
-
-// Import the initialized Firebase Authentication object
 import { auth } from "/src/firebaseConfig.js";
 
-// Import specific functions from the Firebase Auth SDK
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -18,19 +8,6 @@ import {
   signOut,
 } from "firebase/auth";
 
-// -------------------------------------------------------------
-// loginUser(email, password)
-// -------------------------------------------------------------
-// Logs an existing user into Firebase Authentication.
-//
-// Parameters:
-//   email (string)    - user's email
-//   password (string) - user's password
-//
-// Returns: Promise resolving to the user credential object.
-// Usage:
-//   await loginUser("user@example.com", "password123");
-// -------------------------------------------------------------
 export async function loginUser(email, password) {
   return signInWithEmailAndPassword(auth, email, password);
 }
