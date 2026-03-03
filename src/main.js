@@ -1,10 +1,24 @@
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import 'bootstrap';
+import { onAuthReady, logoutUser } from './authentication.js';
 
-// If you have custom global styles, import them as well:
-// import '../styles/style.css';
-
-function sayHello() {
-
+function navToLogin() {
+    window.location.href = "login.html";
 }
-// document.addEventListener('DOMContentLoaded', sayHello);
+
+
+function setup() {
+    $(document).on("click", "#goToLogin", navToLogin);
+    $(document).on("click", "#logoutBtn", logoutUser);
+
+    // watch auth state and update page accordingly
+    onAuthReady(user => {
+        if (user) {
+            // show welcome message and favorites
+            document.getElementById('welcomeMessage').textContent = `Hello, ${user.displayName || user.email}!`;
+            showFavorites(user);
+        } else {
+            document.getElementById('welcomeMessage').textContent = 'Not logged in';
+        }
+    });
+}
+
+$(document).ready(setup);
