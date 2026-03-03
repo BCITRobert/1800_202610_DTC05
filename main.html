@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>My BCIT Project - Main</title>
+        <meta name="comp1800 template" content="My 1800 App">
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- shared component definitions -->
+     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="./src/components/navbar_component.js"></script>
+
+</head>
+
+<body>
+    <!-- reuse the project navbar -->
+    <nav-bar></nav-bar>
+
+    <h1 class="text-3xl text-center mt-40">Welcome to the main page. Only logged‑in users can see this.</p>
+
+    <!-- scripts -->
+    <script type="module" src="./src/app.js"></script>
+    <script src="./src/main.js"></script>
+    <script type="module" src="./src/firebaseConfig.js"></script>
+    <script type="module" src="./src/authentication.js"></script>
+    <script type="module">
+        import { checkAuthState } from './src/authentication.js';
+        checkAuthState();
+    </script>
+</body>
+
+</html>

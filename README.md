@@ -34,15 +34,30 @@ Developed for the COMP 1800 course, this project applies User-Centred Design pra
 To run the application locally:
 
 1.  **Clone** the repository.
-2.  **Install dependencies** by running `npm install` in the project root directory.
-3.  **Start the development server** by running the command: `npm run dev`.
-4.  Open your browser and visit the local address shown in your terminal (usually `http://localhost:5173` or similar).
+2.  **Install dependencies** by running `npm install` in the project root directory.  This pulls in Vite and the Firebase SDK.
+3.  Create a `.env` file in the project root containing the Firebase configuration values provided by your instructor.  Example contents are available in the `env.` file:
 
-Once the application is running:
+    ```text
+    VITE_FIREBASE_API_KEY=...
+    VITE_FIREBASE_AUTH_DOMAIN=your-app.firebaseapp.com
+    VITE_FIREBASE_PROJECT_ID=your-app-id
+    VITE_FIREBASE_APP_ID=1:XXX:web:YYYYYY
+    ```
 
-1.  Browse the list of hiking trails displayed on the main page.
-2.  Click the heart icon (or similar) to mark a trail as a favorite.
-3.  View your favorite hikes in the favorites section.
+    Vite only exposes variables prefixed with `VITE_`, and the dev server
+    must be restarted after editing the `.env` file.
+4.  **Start the development server** by running the command: `npm run dev`.
+5.  Open your browser and visit the local address shown in your terminal (usually `http://localhost:5173` or similar).
+
+Once the application is running from the dev server:
+
+1.  Create an account or log in using the form on `login.html`.
+2.  The app will communicate with the provided Firebase project; user
+    information lives in Authentication and favorites are saved in
+    Firestore under `/users/{uid}/favorites`.
+3.  Browse the list of hiking trails displayed on the main page.
+4.  Click the heart icon (or similar) to mark a trail as a favorite.
+5.  View your favorite hikes in the favorites section.
 
 ---
 
