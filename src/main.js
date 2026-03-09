@@ -1,25 +1,9 @@
 import { onAuthReady, logoutUser } from './authentication.js';
-import { getFavorites } from './firestore.js';
 
 function navToLogin() {
     window.location.href = "login.html";
 }
 
-// display a list of favorites once user is authenticated
-async function showFavorites(user) {
-    const listEl = document.getElementById('favoritesList');
-    if (!listEl) return;
-    try {
-        const favs = await getFavorites(user.uid);
-        if (favs.length === 0) {
-            listEl.innerHTML = '<li>No favorites yet.</li>';
-        } else {
-            listEl.innerHTML = favs.map(f => `<li>${f.name || f.id}</li>`).join('');
-        }
-    } catch (err) {
-        console.error('failed to load favorites', err);
-    }
-}
 
 function setup() {
     $(document).on("click", "#goToLogin", navToLogin);

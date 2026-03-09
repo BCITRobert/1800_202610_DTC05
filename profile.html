@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>My BCIT Project - Main</title>
+    <title>My BCIT Project - User profile</title>
         <meta name="comp1800 template" content="My 1800 App">
 
     <!-- Required meta tags -->
@@ -19,16 +19,13 @@
     <!-- reuse the project navbar -->
     <nav-bar></nav-bar>
 
-    <h1 class="text-3xl text-center mt-40">Welcome to the main page. Only logged‑in users can see this.</p>
+    <h1>This is the profile page</h1>
+    <div id="userProfile"></div>
 
     <!-- scripts -->
     <script type="module" src="./src/app.js"></script>
-    <script src="./src/main.js"></script>
+    <script type="module" src="./src/profile.js"></script>
 
-    <script type="module">
-        import { checkAuthState } from './src/authentication.js';
-        checkAuthState();
-    </script>
 </body>
 
 </html>
