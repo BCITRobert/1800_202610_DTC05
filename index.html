@@ -10,38 +10,33 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.tailwindcss.com"></script>
     
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-info">
-        <div class="container-fluid">
-            <a class="navbar-brand">
-                <img src="./images/Hamburger_icon.png" height="36">Transit crowd</a>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-            </div>
-        </div>
-    </nav>
-
-    <div class="px-4 py-5 my-5 text-center">
-        <img class="d-block mx-auto mb-4" src="./images/bus.jpg" alt="" width="150" height="150">
-        <h1 class="display-5 fw-bold">Welcome to Transit Safety!</h1>
-        <div class="col-lg-6 mx-auto">
-            <h3>Take public transit to a new level.</h3>
-            <p class="lead mb-4">Let's make public transit a safer experience for everyone!</p>
-            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <button type="button" class="btn btn-info btn-lg px-4 gap-3">Explore</button>
-                <button type="button" class="btn btn-info btn-lg px-4 gap-3">Login/Signup</button>
-            </div>
-        </div>
+  <nav class="bg-gray-400 px-4 py-3">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <a class="flex items-center gap-2 font-semibold text-black text-lg">
+        <img src="./images/Hamburger_icon.png" class="h-9">SafeRide</a>
+      <form class="flex items-center gap-2">
+        <input class="px-3 py-1.5 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400" type="search" placeholder="Search" aria-label="Search">
+        <button class="px-4 py-1.5 border-2 border-gray-500 text-gray-600 font-bold rounded hover:bg-gray-500 hover:text-white transition" type="submit">Search</button>
+      </form>
     </div>
+  </nav>
 
+  <div class="px-4 py-20 text-center">
+    <img class="block mx-auto mb-6 w-36 h-36 object-cover rounded" src="./images/bus.jpg" alt="Bus">
+    <h1 class="text-4xl font-bold mb-3">Welcome to Transit Safety!</h1>
+    <div class="max-w-xl mx-auto">
+      <h3 class="text-xl font-semibold mb-2">Take public transit to a new level.</h3>
+      <p class="text-lg text-gray-600 mb-6">Let's make public transit a safer experience for everyone!</p>
+      <div class="flex flex-col sm:flex-row justify-center gap-3">
+        <button class="bg-gray-400 hover:bg-gray-400 text-black font-semibold px-6 py-3 rounded-lg transition">Login/Signup</button>
+      </div>
+    </div>
+  </div>
     
 
     <script type="module" src="/src/main.js"></script>
