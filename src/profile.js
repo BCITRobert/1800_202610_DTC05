@@ -1,10 +1,10 @@
 import { db } from "./firebaseConfig.js";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 
 
 function getDocIdFromUrl() {
     const params = new URL(window.location.href).searchParams;
-    return params.get("docID");
+    return params.get("userID");
 }
 
 // Fetch the hike and display its name and image
@@ -12,22 +12,26 @@ async function displayUserProfile() {
     const id = getDocIdFromUrl();
 
     try {
-        const hikeRef = doc(db, "hikes", id);
-        const hikeSnap = await getDoc(hikeRef);
+        const userRef = doc(db, "users", id);
+        const userSnap = await getDoc(userRef);
 
-        const hike = hikeSnap.data();
-        const name = hike.name;
-        const code = hike.code;
+        const user = userSnap.data();
+        const name = user.name;
+        const email = user.email;
+        const avatar = user.avatar;
 
+        console.log(user)
         // Update the page
-        document.getElementById("hikeName").textContent = name;
-        const img = document.getElementById("hikeImage");
-        img.src = `./images/${code}.jpg`;
-        img.alt = `${name} image`;
+        document.getElementById("userProfile").innerHTML = `
+            <img src="${avatar}" alt="${name}'s avatar" width="100">
+            <h2>Name: ${name}</h2>
+            <p>Email: ${email}</p>
+        `;
+
     } catch (error) {
-        console.error("Error loading hike:", error);
+        console.error("Error loading user profile:", error);
         document.getElementById("hikeName").textContent = "Error loading hike.";
     }
 }
 
-displayUserProfile();
+displayUserProfile()

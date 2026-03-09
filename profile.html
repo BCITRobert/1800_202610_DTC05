@@ -3,26 +3,32 @@
 
 <head>
     <title>My BCIT Project - User profile</title>
-        <meta name="comp1800 template" content="My 1800 App">
+    <meta name="comp1800 template" content="My 1800 App">
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- shared component definitions -->
-     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="./src/components/navbar_component.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
 
 </head>
 
 <body>
     <!-- reuse the project navbar -->
     <nav-bar></nav-bar>
+    <bottom-bar></bottom-bar>
 
-    <h1>This is the profile page</h1>
-    <div id="userProfile"></div>
+    <h1 class="text-center mt-30">This is the profile page</h1>
+    <div id="userProfile" class="flex flex-col items-center">
+
+    </div>
 
     <!-- scripts -->
+    <script type="module" src="./src/components/navbar_component.js"></script>
+    <script type="module" src="./src/components/bottom_component.js"></script>
     <script type="module" src="./src/app.js"></script>
     <script type="module" src="./src/profile.js"></script>
 

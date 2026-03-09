@@ -5,34 +5,35 @@ import { logoutUser } from "../authentication.js";
 class Navbar extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
-            <nav class="w-full flex justify-between bg-gray-400 p-5">
-                <img src="./images/menu.svg" alt="Menu" class="w-8 h-8" id="profile">
-                <div id="authControls">
-                    <button id="goToLogin" class="text-white p-2 bg-black rounded-lg">Login/Sign up</button>
+            <nav class="bg-gray-400 px-4 py-3">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <a class="flex items-center gap-2 font-semibold text-black text-lg">
+                        <img src="./images/Hamburger_icon.png" class="h-9">SafeRide</a>
+                    <form id="authControls" class="flex items-center gap-2">
+                        <input class="px-3 py-1.5 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400" type="search" placeholder="Search" aria-label="Search">
+                        <button class="px-4 py-1.5 border-2 border-gray-500 text-gray-600 font-bold rounded hover:bg-gray-500 hover:text-white transition" type="submit">Search</button>
+                        <button class="px-4 py-1.5 border-2 border-gray-500 text-gray-600 font-bold rounded hover:bg-gray-500 hover:text-white transition" type="button" id="goToLogin">Login/Signup</button>
+                    </form>
                 </div>
             </nav>
         `;
         this.updateAuth();
-        
+
     }
 
     updateAuth() {
         const authControls = this.querySelector('#authControls')
-        const profileBtn = this.querySelector("#profile")
         if (!authControls) return;
         onAuthStateChanged(auth, user => {
+            const btn = authControls.querySelector('#goToLogin');
             if (user) {
-                authControls.innerHTML = `<button id="signOutBtn" class="text-white p-2 bg-black rounded-lg">Logout</button>`;
-                const btn = authControls.querySelector('#signOutBtn');
+                document.getElementById("goToLogin").textContent = "Logout"
                 btn?.addEventListener('click', logoutUser);
-                profileBtn?.addEventListener('click', () => { window.location.href = 'profile.html'; })
             } else {
-                authControls.innerHTML = `<button id="goToLogin" class="text-white p-2 bg-black rounded-lg">Login/Sign up</button>`;
-                const btn = authControls.querySelector('#goToLogin');
                 btn?.addEventListener('click', () => { window.location.href = 'login.html'; });
             }
         });
     }
-    
+
 }
 customElements.define("nav-bar", Navbar)
