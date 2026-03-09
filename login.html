@@ -29,6 +29,7 @@
     <!-- Stuff for body goes here -->
 
     <nav-bar></nav-bar>
+    <bottom-bar></bottom-bar>
 
     <!-- authentication alert -->
     <div id="authAlert" class="hidden text-red-600 text-center mb-4"></div>
@@ -93,6 +94,8 @@
             </a>
         </small>
     </div>
+
+    
     <!---------------------------------------------->
     <!-- Your own JavaScript functions go here    -->
     <!---------------------------------------------->
@@ -101,13 +104,9 @@
     <script type="module" src="./src/app.js"></script>
     <script src="./src/main.js"></script>
     <script type="module" src="./src/components/navbar_component.js"></script>
-    <!-- login.js no longer exists; logic moved to loginSignup.js -->
+        <script type="module" src="./src/components/bottom_component.js"></script>
     <script type="module" src="./src/firebaseConfig.js"></script>
     <script type="module" src="./src/authentication.js"></script>
-    <!-- module handles auth + toggling when bundled, but it may fail to load
-         under a simple Python server (CSS and npm imports aren't supported).
-         Provide a small non-module fallback that just toggles the views so the
-         sign-up link works regardless of module errors. -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const loginView = document.getElementById('loginView');

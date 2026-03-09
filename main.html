@@ -3,32 +3,38 @@
 
 <head>
     <title>My BCIT Project - Main</title>
-        <meta name="comp1800 template" content="My 1800 App">
+    <meta name="comp1800 template" content="My 1800 App">
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- shared component definitions -->
-     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="./src/components/navbar_component.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 
 </head>
 
 <body>
     <!-- reuse the project navbar -->
     <nav-bar></nav-bar>
+    <bottom-bar></bottom-bar>
 
     <h1 class="text-3xl text-center mt-40">Welcome to the main page. Only logged‑in users can see this.</p>
+    <h1 class="text-3xl text-center mt10" id="welcomeMessage"></h1>
 
-    <!-- scripts -->
-    <script type="module" src="./src/app.js"></script>
-    <script src="./src/main.js"></script>
+        <!-- scripts -->
+        <script type="module" src="./src/components/navbar_component.js"></script>
+        <script type="module" src="./src/components/bottom_component.js"></script>
+        <script type="module" src="./src/app.js"></script>
+        <script type="module" src="./src/main.js"></script>
 
-    <script type="module">
-        import { checkAuthState } from './src/authentication.js';
-        checkAuthState();
-    </script>
+        <script type="module">
+            import { checkAuthState } from './src/authentication.js';
+            checkAuthState();
+        </script>
+
 </body>
 
 </html>

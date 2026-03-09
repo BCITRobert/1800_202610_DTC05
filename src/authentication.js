@@ -90,7 +90,7 @@ export function checkAuthState() {
     if (window.location.pathname.endsWith("main.html")) {
       if (user) {
         const displayName = user.displayName || user.email;
-        $("#welcomeMessage").text(`Hello, ${displayName}!`);
+        document.getElementById("welcomeMessage").innerText = `Hello, ${displayName}!`
       } else {
         window.location.href = "index.html";
       }
