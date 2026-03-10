@@ -1,5 +1,3 @@
-// Bootstrap was originally imported here, but this project relies on
-// TailwindCSS and does not install bootstrap in package.json.  Remove
-// these to avoid dependency warnings.
+// We are using Tailwind for styling, so we don't need to import Bootstrap.
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap';

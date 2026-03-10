@@ -7,7 +7,6 @@ function getDocIdFromUrl() {
     return params.get("userID");
 }
 
-// Fetch the hike and display its name and image
 async function displayUserProfile() {
     const id = getDocIdFromUrl();
 
@@ -21,7 +20,6 @@ async function displayUserProfile() {
         const avatar = user.avatar;
 
         console.log(user)
-        // Update the page
         document.getElementById("userProfile").innerHTML = `
             <img src="${avatar}" alt="${name}'s avatar" width="100">
             <h2>Name: ${name}</h2>
