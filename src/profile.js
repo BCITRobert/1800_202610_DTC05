@@ -13,8 +13,10 @@ async function displayUserProfile() {
     try {
         const userRef = doc(db, "users", id);
         const userSnap = await getDoc(userRef);
+        console.log(userSnap)
 
         const user = userSnap.data();
+
         const name = user.name;
         const email = user.email;
         const avatar = user.avatar;
@@ -27,8 +29,7 @@ async function displayUserProfile() {
         `;
 
     } catch (error) {
-        console.error("Error loading user profile:", error);
-        document.getElementById("hikeName").textContent = "Error loading hike.";
+        console.log("Error loading user profile:", error);
     }
 }
 

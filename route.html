@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>My BCIT Project - Create new route</title>
+    <meta name="comp1800 template" content="My 1800 App">
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- shared component definitions -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
+
+</head>
+
+<body>
+    <!-- reuse the project navbar -->
+    <nav-bar></nav-bar>
+    <bottom-bar></bottom-bar>
+
+    <h1 id="welcome" class="text-center mt-3 text-2xl">Create your new Route!</h1>
+    <div id="container" class="flex flex-col w-100 items-center">
+        <img src="./images/add_icon.svg" alt="Add new route" id="addBtn" class="w-16 h-16 mt-2">
+    </div>
+
+    <!-- scripts -->
+    <script type="module" src="./src/components/navbar_component.js"></script>
+    <script type="module" src="./src/components/bottom_component.js"></script>
+    <script type="module" src="./src/app.js"></script>
+    <script type="module" src="./src/route.js"></script>
+
+</body>
+
+</html>
