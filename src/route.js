@@ -22,7 +22,8 @@ function setup() {
 
     onAuthReady(async (user) => {
         if (user) {
-            document.getElementById('welcome').textContent = 'Create your new Route comment!'
+            document.getElementById('welcome').textContent = `Create your new Route comment!\nExesit routes:`
+            document.getElementById('welcome').style.whiteSpace = 'pre'
             displayRoutes(routeDisplayContainer)
             addRouteContainer.classList.remove("hidden")
             addRouteContainer.classList.add("flex")
@@ -160,10 +161,12 @@ async function displayRoutes(routeDisplayContainer) {
         // Clone the template and fill in the fields
         const routeCard = document.getElementById("routeTemp").content.cloneNode(true);
 
-        routeCard.querySelector("#title").innerHTML = `
-        title
+        routeCard.querySelector("#routeTitle").innerHTML = `
+        title: ${title}
         `;
-        routeCard.querySelector("#detail").innerHTML = ``;
+        routeCard.querySelector("#routeDetail").innerHTML = `
+        detail: ${detail}
+        `;
 
         // reviewCard.querySelector(".level").textContent = `Level: ${level}`;
         // reviewCard.querySelector(".season").textContent = `Season: ${season}`;

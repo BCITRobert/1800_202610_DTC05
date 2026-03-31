@@ -22,9 +22,10 @@
     <nav-bar></nav-bar>
     <bottom-bar></bottom-bar>
 
+    
     <h1 id="welcome" class="text-center mt-3 text-2xl">Please login before adding new route</h1>
-    <div id="routeGroup">
-        <p class="mx-auto">test</p>
+    <div id="routeGroup" class="flex flex-col">
+
     </div>
     <div id="container" class="hidden max-w-3xl mx-auto px-4 py-6">
         <img src="./images/add_icon.svg" alt="Add new route" id="addBtn" class="w-16 h-16 my-2 cursor-pointer mx-auto">
@@ -135,10 +136,12 @@
         </div>
     </div>
 
-    <template id="routeTemp" class="flex">
-        <div>
-            <h1 id="title"></h1>
-            <p id="detail"></p>
+    <template id="routeTemp">
+        <div class="flex border-gray-200 border-2 mx-auto w-4/5 flex-col rounded-md justify-evenly my-2">
+            <h1 id="routeTitle"></h1>
+            <div class="flex flex-row">
+                <p id="routeDetail"></p>
+            </div>
         </div>
     </template>
 
