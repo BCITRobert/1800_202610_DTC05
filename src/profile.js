@@ -13,24 +13,28 @@ async function displayUserProfile() {
     try {
         const userRef = doc(db, "users", id);
         const userSnap = await getDoc(userRef);
-        console.log(userSnap)
 
         const user = userSnap.data();
+        console.log(user)
 
         const name = user.name;
         const email = user.email;
         const avatar = user.avatar;
-
-        console.log(user)
         document.getElementById("userProfile").innerHTML = `
             <img src="${avatar}" alt="${name}'s avatar" width="100">
             <h2>Name: ${name}</h2>
             <p>Email: ${email}</p>
         `;
+        
+        
+
 
     } catch (error) {
         console.log("Error loading user profile:", error);
     }
 }
 
+
+
 displayUserProfile()
+

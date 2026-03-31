@@ -1,52 +1,58 @@
 import { onAuthReady } from './authentication.js';
-
+import { db, auth } from "./firebaseConfig.js";
+import { doc, getDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 function setup() {
     const addRouteContainer = document.getElementById('container')
     const inputForm = document.getElementById('inputForm')
+    const addBtn = document.getElementById('addBtn')
+    const routeBtn = document.querySelectorAll('.routeBtn')
+    routeBtn.forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.classList.toggle('active');
+        })
+    })
+
+
     onAuthReady(async (user) => {
         if (user) {
+            document.getElementById('welcome').textContent = 'Create your new Route comment!'
             addRouteContainer.classList.remove("hidden")
-            document.getElementById("addbtn").addEventListener('click', ()=> {
+            addRouteContainer.classList.add("flex")
+            addBtn.addEventListener('click', () => {
+                addBtn.classList.add("hidden")
                 inputForm.classList.remove("hidden")
                 newRoute()
             })
-        } else {
-            document.getElementById('welcome').textContent = 'Please login before adding new route'
-            addRouteContainer.classList.add("hidden")
+
         }
     })
 }
 
 async function newRoute() {
-    const hikeTitle = document.getElementById("title").value;
-    const hikeLevel = document.getElementById("level").value;
-    const hikeSeason = document.getElementById("season").value;
-    const hikeDescription = document.getElementById("description").value;
-    const hikeFlooded = document.querySelector('input[name="flooded"]:checked')?.value;
-    const hikeScrambled = document.querySelector('input[name="scrambled"]:checked')?.value;
+
 }
 
 
-async function writeReview() {
+async function writeRoute() {
     console.log("Inside write review");
 
     // 🧾 Collect form data
-    const hikeTitle = document.getElementById("title").value;
-    const hikeLevel = document.getElementById("level").value;
-    const hikeSeason = document.getElementById("season").value;
-    const hikeDescription = document.getElementById("description").value;
-    const hikeFlooded = document.querySelector('input[name="flooded"]:checked')?.value;
-    const hikeScrambled = document.querySelector('input[name="scrambled"]:checked')?.value;
+    const routeTitle = document.getElementById("title").value;
+    const routeCrowdLevel = document.getElementById("crowdLevel").value;
+    const routeDetail = document.getElementById("detail").value;
+    const routeAddition = document.getElementById("addition").value;
+    const routeRecomand = document.querySelector('input[name="recommand"]:checked')?.value;
+
+    const activeButtons = document.querySelectorAll('.routeBtn.active')
+    const btnValues = Array.from(activeButtons).map(btn => btn.value);
+    console.log(btnValues);
 
     // Log collected data for verification
-    console.log("inside write review, rating =", hikeRating);
-    console.log("hikeDocID =", hikeDocID);
-    console.log("Collected review data:");
-    console.log(hikeTitle, hikeLevel, hikeSeason, hikeDescription, hikeFlooded, hikeScrambled);
+    console.log(routeTitle, routeDetail, routeCrowdLevel, btnValues, routeAddition, routeRecomand);
 
     // simple validation
-    if (!hikeTitle || !hikeDescription) {
+    if (!routeTitle) {
         alert("Please complete all required fields.");
         return;
     }
@@ -60,15 +66,12 @@ async function writeReview() {
 
             // ✅ Store review as subcollection under this hike
             // Path: hikes/{hikeDocID}/reviews/{autoReviewID}
-            await addDoc(collection(db, "hikes", hikeDocID, "reviews"), {
-                userID: userID,
-                title: hikeTitle,
-                level: hikeLevel,
-                season: hikeSeason,
-                description: hikeDescription,
-                flooded: hikeFlooded,
-                scrambled: hikeScrambled,
-                rating: hikeRating,
+            await addDoc(collection(db, "users", userID, "routes"), {
+                title: routeTitle,
+                crowdLevel: routeCrowdLevel,
+                commutePeriod: btnValues,
+                detail: routeDetail,
+                recomand: routeRecomand,
                 timestamp: serverTimestamp()
             });
 
@@ -76,13 +79,47 @@ async function writeReview() {
 
 
             // Show thank-you modal
-            const thankYouModalEl = document.getElementById("thankYouModal");
-            const thankYouModal = new bootstrap.Modal(thankYouModalEl);
-            thankYouModal.show();
+            // Get modal and close buttons
+            const thankYouModal = document.getElementById("thankYouModal");
+            const closeBtns = [
+                document.getElementById("closeModalBtn"),
+                document.getElementById("closeModalBtn2")
+            ];
 
-            // Redirect AFTER user closes the modal
-            thankYouModalEl.addEventListener("hidden.bs.modal", () => {
-                window.location.href = `eachHike.html?docID=${hikeDocID}`;
+            // Function to show modal
+            function showThankYouModal() {
+                thankYouModal.classList.remove("hidden");
+                thankYouModal.classList.add("flex");
+            }
+
+            // Function to hide modal and redirect once
+            function hideThankYouModal() {
+                thankYouModal.classList.add("hidden");
+                thankYouModal.classList.remove("flex");
+                // Redirect after modal is closed
+                window.location.href = `profile.html?userID=${user.uid}`;
+            }
+
+            // Show modal
+            showThankYouModal();
+
+            // Close modal when user clicks any close button
+            closeBtns.forEach(btn => {
+                btn.addEventListener("click", hideThankYouModal, { once: true });
+            });
+
+            // Optional: close modal on click outside
+            thankYouModal.addEventListener("click", (e) => {
+                if (e.target === thankYouModal) {
+                    hideThankYouModal();
+                }
+            }, { once: true });
+
+            // Optional: close modal on ESC key
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    hideThankYouModal();
+                }
             }, { once: true });
 
         } catch (error) {
@@ -94,5 +131,10 @@ async function writeReview() {
     }
 }
 
-
-setup()
+document.addEventListener('DOMContentLoaded', () => {
+    setup()
+    const submitBtn = document.getElementById("submitBtn")
+    submitBtn.addEventListener("click", () => {
+        writeRoute()
+    })
+});

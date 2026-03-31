@@ -1,0 +1,27 @@
+.routeBtn {
+    display: inline-block;
+    padding: 1px 6px;
+    border-width: 2px;
+    border-style: outset;
+    text-align: center;
+    white-space: nowrap;
+    background-color: buttonface;
+    color: buttontext;
+    border: 2px outset;
+    border-radius: 2px;
+    margin-bottom: 4px;
+}
+
+.routeBtn:hover {
+    background-color: rgb(230, 230, 230);
+}
+
+.routeBtn.active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 #898989;
+    background-color: rgb(210, 210, 210)
+}
+
+body {
+    padding-bottom: 100px;
+}
