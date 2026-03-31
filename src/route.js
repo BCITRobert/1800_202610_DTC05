@@ -58,7 +58,7 @@ async function writeRoute() {
     console.log(routeTitle, routeDetail, routeCrowdLevel, btnValues, routeAddition, routeRecomand);
 
     // simple validation
-    if (!routeTitle) {
+    if (!routeTitle && !btnValues) {
         alert("Please complete all required fields.");
         return;
     }
@@ -151,6 +151,14 @@ async function displayRoutes(routeDisplayContainer) {
 
         const title = data.title || "(No title)";
         const detail = data.detail || "(No detail)";
+        const commuteTime = data.commutePeriod || "(No time specific)"
+        const crowdLevel = data.crowdLevel || "(Not specific)"
+        const recomand = data.recomand || "(Not specific)"
+
+        let crowdLevelText = ``;
+        commuteTime.forEach((timePeriod)=>{
+            crowdLevelText += `${timePeriod}, `;
+        })
 
         // Format the time
         let time = "";
@@ -167,6 +175,17 @@ async function displayRoutes(routeDisplayContainer) {
         routeCard.querySelector("#routeDetail").innerHTML = `
         detail: ${detail}
         `;
+        routeCard.querySelector("#routeCommuteTime").innerHTML = `
+        commute time: ${commuteTime}
+        `;
+        routeCard.querySelector("#routeCrowdLevel").innerHTML = `
+        crowding level: ${crowdLevel}
+        `;
+        routeCard.querySelector("#routeRecomand").innerHTML = `
+        recomand: ${recomand}
+        `;
+
+
 
         // reviewCard.querySelector(".level").textContent = `Level: ${level}`;
         // reviewCard.querySelector(".season").textContent = `Season: ${season}`;
