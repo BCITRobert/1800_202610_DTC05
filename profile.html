@@ -16,12 +16,17 @@
 </head>
 
 <body>
-    <!-- reuse the project navbar -->
-    <nav-bar></nav-bar>
 
-    <header>
-        <h1 class="text-3xl font-bold text-center">Welcome, <span id="name-goes-here"></span></h1>
-    </header>
+    <nav class="bg-gray-400 px-4 py-3">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+        <a class="flex items-center gap-2 font-semibold text-black text-lg">
+            <img src="./images/Hamburger_icon.png" class="h-9">SafeRide</a>
+        <form class="flex items-center gap-2">
+            <input class="px-3 py-1.5 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400" type="search" placeholder="Search" aria-label="Search">
+            <button class="px-4 py-1.5 border-2 border-gray-500 text-gray-600 font-bold rounded hover:bg-gray-500 hover:text-white transition" type="submit">Search</button>
+        </form>
+        </div>
+    </nav>
 
     <section class="mx-10 text-center mt-20">
         <h1 class="font-bold text-2xl">My Routes</h1>
