@@ -23,20 +23,22 @@
     <bottom-bar></bottom-bar>
 
     <h1 id="welcome" class="text-center mt-3 text-2xl">Please login before adding new route</h1>
+    <div id="routeGroup">
+        <p class="mx-auto">test</p>
+    </div>
     <div id="container" class="hidden max-w-3xl mx-auto px-4 py-6">
         <img src="./images/add_icon.svg" alt="Add new route" id="addBtn" class="w-16 h-16 my-2 cursor-pointer mx-auto">
-
         <form id="inputForm" class="hidden space-y-6">
             <!-- Title -->
             <div>
-                <label class="block mb-1 font-medium">Route name</label>
+                <label class="block mb-1 font-medium">* Route name</label>
                 <input type="text" id="title" placeholder="Title"
                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
             <!-- Route info -->
             <div>
-                <label class="block mb-1 font-medium">* Route details</label>
+                <label class="block mb-1 font-medium">Route details</label>
                 <textarea id="detail" rows="3"
                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-4 focus:ring-blue-500"></textarea>
             </div>
@@ -70,7 +72,7 @@
 
             <!-- addition -->
             <div>
-                <label class="block mb-1 font-medium">* Addition to the route</label>
+                <label class="block mb-1 font-medium">Addition to the route</label>
                 <textarea id="addition" rows="3"
                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
             </div>
@@ -132,6 +134,13 @@
             </div>
         </div>
     </div>
+
+    <template id="routeTemp" class="flex">
+        <div>
+            <h1 id="title"></h1>
+            <p id="detail"></p>
+        </div>
+    </template>
 
     <!-- scripts -->
     <script type="module" src="./src/components/navbar_component.js"></script>

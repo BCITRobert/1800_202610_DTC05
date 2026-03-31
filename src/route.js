@@ -1,36 +1,42 @@
 import { onAuthReady } from './authentication.js';
 import { db, auth } from "./firebaseConfig.js";
-import { doc, getDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDocs, collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 function setup() {
     const addRouteContainer = document.getElementById('container')
     const inputForm = document.getElementById('inputForm')
     const addBtn = document.getElementById('addBtn')
     const routeBtn = document.querySelectorAll('.routeBtn')
+    const submitBtn = document.getElementById("submitBtn")
+    const routeDisplayContainer = document.getElementById('routeGroup')
+
     routeBtn.forEach(btn => {
         btn.addEventListener('click', () => {
             btn.classList.toggle('active');
         })
     })
-
+    
+    submitBtn.addEventListener("click", () => {
+        writeRoute()
+    })
 
     onAuthReady(async (user) => {
         if (user) {
             document.getElementById('welcome').textContent = 'Create your new Route comment!'
+            displayRoutes(routeDisplayContainer)
             addRouteContainer.classList.remove("hidden")
             addRouteContainer.classList.add("flex")
+            routeDisplayContainer.classList.remove("hidden")
+            routeDisplayContainer.classList.add("flex")
             addBtn.addEventListener('click', () => {
                 addBtn.classList.add("hidden")
+                routeDisplayContainer.classList.add("hidden")
                 inputForm.classList.remove("hidden")
                 newRoute()
             })
 
         }
     })
-}
-
-async function newRoute() {
-
 }
 
 
@@ -46,7 +52,6 @@ async function writeRoute() {
 
     const activeButtons = document.querySelectorAll('.routeBtn.active')
     const btnValues = Array.from(activeButtons).map(btn => btn.value);
-    console.log(btnValues);
 
     // Log collected data for verification
     console.log(routeTitle, routeDetail, routeCrowdLevel, btnValues, routeAddition, routeRecomand);
@@ -64,7 +69,6 @@ async function writeRoute() {
         try {
             const userID = user.uid;
 
-            // ✅ Store review as subcollection under this hike
             // Path: hikes/{hikeDocID}/reviews/{autoReviewID}
             await addDoc(collection(db, "users", userID, "routes"), {
                 title: routeTitle,
@@ -97,7 +101,7 @@ async function writeRoute() {
                 thankYouModal.classList.add("hidden");
                 thankYouModal.classList.remove("flex");
                 // Redirect after modal is closed
-                window.location.href = `profile.html?userID=${user.uid}`;
+                window.location.href = `route.html`;
             }
 
             // Show modal
@@ -131,10 +135,58 @@ async function writeRoute() {
     }
 }
 
+async function displayRoutes(routeDisplayContainer) {
+    const user = auth.currentUser;
+    const userID = user.uid
+
+    const routeRef = collection(db, "users", userID, "routes")
+
+    const routeSnap = await getDocs(routeRef)
+    console.log(routeSnap.size)
+
+    routeSnap.forEach((Snap) => {
+        const data = Snap.data();
+        console.log(data)
+
+        const title = data.title || "(No title)";
+        const detail = data.detail || "(No detail)";
+
+        // Format the time
+        let time = "";
+        if (data.timestamp?.toDate) {
+            time = data.timestamp.toDate().toLocaleString();
+        }
+
+        // Clone the template and fill in the fields
+        const routeCard = document.getElementById("routeTemp").content.cloneNode(true);
+
+        routeCard.querySelector("#title").innerHTML = `
+        title
+        `;
+        routeCard.querySelector("#detail").innerHTML = ``;
+
+        // reviewCard.querySelector(".level").textContent = `Level: ${level}`;
+        // reviewCard.querySelector(".season").textContent = `Season: ${season}`;
+        // reviewCard.querySelector(".scrambled").textContent = `Scrambled: ${scrambled}`;
+        // reviewCard.querySelector(".flooded").textContent = `Flooded: ${flooded}`;
+        // reviewCard.querySelector(".description").textContent = `Description: ${description}`;
+
+        // Star rating
+        // let starRating = "";
+        // const safeRating = Math.max(0, Math.min(5, rating));
+        // for (let i = 0; i < safeRating; i++) {
+        //     starRating += '<span class="material-icons">star</span>';
+        // }
+        // for (let i = safeRating; i < 5; i++) {
+        //     starRating += '<span class="material-icons">star_outline</span>';
+        // }
+        // reviewCard.querySelector(".star-rating").innerHTML = starRating;
+
+        routeDisplayContainer.appendChild(routeCard);
+    });
+
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     setup()
-    const submitBtn = document.getElementById("submitBtn")
-    submitBtn.addEventListener("click", () => {
-        writeRoute()
-    })
 });
