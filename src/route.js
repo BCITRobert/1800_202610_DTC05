@@ -1,6 +1,6 @@
 import { onAuthReady } from './authentication.js';
 import { db, auth } from "./firebaseConfig.js";
-import { doc, getDocs, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDocs, collection, addDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
 
 function setup() {
     const addRouteContainer = document.getElementById('container')
@@ -9,6 +9,7 @@ function setup() {
     const routeBtn = document.querySelectorAll('.routeBtn')
     const submitBtn = document.getElementById("submitBtn")
     const routeDisplayContainer = document.getElementById('routeGroup')
+    
 
     routeBtn.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -22,18 +23,18 @@ function setup() {
 
     onAuthReady(async (user) => {
         if (user) {
-            document.getElementById('welcome').textContent = `Create your new Route comment!\nExesit routes:`
+            document.getElementById('welcome').textContent = `Create your new Route comment!\nExisting routes:`
             document.getElementById('welcome').style.whiteSpace = 'pre'
             displayRoutes(routeDisplayContainer)
             addRouteContainer.classList.remove("hidden")
             addRouteContainer.classList.add("flex")
             routeDisplayContainer.classList.remove("hidden")
             routeDisplayContainer.classList.add("flex")
+
             addBtn.addEventListener('click', () => {
                 addBtn.classList.add("hidden")
                 routeDisplayContainer.classList.add("hidden")
                 inputForm.classList.remove("hidden")
-                newRoute()
             })
 
         }
@@ -48,14 +49,13 @@ async function writeRoute() {
     const routeTitle = document.getElementById("title").value;
     const routeCrowdLevel = document.getElementById("crowdLevel").value;
     const routeDetail = document.getElementById("detail").value;
-    const routeAddition = document.getElementById("addition").value;
     const routeRecomand = document.querySelector('input[name="recommand"]:checked')?.value;
 
     const activeButtons = document.querySelectorAll('.routeBtn.active')
     const btnValues = Array.from(activeButtons).map(btn => btn.value);
 
     // Log collected data for verification
-    console.log(routeTitle, routeDetail, routeCrowdLevel, btnValues, routeAddition, routeRecomand);
+    console.log(routeTitle, routeDetail, routeCrowdLevel, btnValues, routeRecomand);
 
     // simple validation
     if (!routeTitle && !btnValues) {
@@ -145,7 +145,9 @@ async function displayRoutes(routeDisplayContainer) {
     const routeSnap = await getDocs(routeRef)
     console.log(routeSnap.size)
 
+
     routeSnap.forEach((Snap) => {
+        const docID = Snap.id
         const data = Snap.data();
         console.log(data)
 
@@ -157,7 +159,7 @@ async function displayRoutes(routeDisplayContainer) {
 
         let crowdLevelText = ``;
         commuteTime.forEach((timePeriod)=>{
-            crowdLevelText += `${timePeriod}, `;
+            crowdLevelText += ` ${timePeriod}, `;
         })
 
         // Format the time
@@ -170,39 +172,28 @@ async function displayRoutes(routeDisplayContainer) {
         const routeCard = document.getElementById("routeTemp").content.cloneNode(true);
 
         routeCard.querySelector("#routeTitle").innerHTML = `
-        title: ${title}
+        <span class="font-bold">Route Title</span>: ${title}
         `;
+        routeCard.querySelector("#timeStamp").innerHTML = `
+        <span class="font-bold">Time Created</span>: ${time}
+        `;
+        routeCard.querySelector('#deleteRoute').addEventListener("click", async (params) => {
+            const docRef = doc(db, "users", userID, "routes", docID);
+            await deleteDoc(docRef);
+            window.location.reload()
+        })
         routeCard.querySelector("#routeDetail").innerHTML = `
-        detail: ${detail}
+        <span class="font-semibold">Detail</span>: ${detail}
         `;
         routeCard.querySelector("#routeCommuteTime").innerHTML = `
-        commute time: ${commuteTime}
+        <span class="font-semibold">Commute Time</span>: ${commuteTime}
         `;
         routeCard.querySelector("#routeCrowdLevel").innerHTML = `
-        crowding level: ${crowdLevel}
+        <span class="font-semibold">Crowding Level</span>: ${crowdLevel}
         `;
         routeCard.querySelector("#routeRecomand").innerHTML = `
-        recomand: ${recomand}
+        <span class="font-semibold">Recommended</span>: ${recomand}
         `;
-
-
-
-        // reviewCard.querySelector(".level").textContent = `Level: ${level}`;
-        // reviewCard.querySelector(".season").textContent = `Season: ${season}`;
-        // reviewCard.querySelector(".scrambled").textContent = `Scrambled: ${scrambled}`;
-        // reviewCard.querySelector(".flooded").textContent = `Flooded: ${flooded}`;
-        // reviewCard.querySelector(".description").textContent = `Description: ${description}`;
-
-        // Star rating
-        // let starRating = "";
-        // const safeRating = Math.max(0, Math.min(5, rating));
-        // for (let i = 0; i < safeRating; i++) {
-        //     starRating += '<span class="material-icons">star</span>';
-        // }
-        // for (let i = safeRating; i < 5; i++) {
-        //     starRating += '<span class="material-icons">star_outline</span>';
-        // }
-        // reviewCard.querySelector(".star-rating").innerHTML = starRating;
 
         routeDisplayContainer.appendChild(routeCard);
     });

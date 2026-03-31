@@ -22,7 +22,7 @@
     <nav-bar></nav-bar>
     <bottom-bar></bottom-bar>
 
-    
+
     <h1 id="welcome" class="text-center mt-3 text-2xl">Please login before adding new route</h1>
     <div id="routeGroup" class="flex flex-col">
 
@@ -131,12 +131,18 @@
 
     <template id="routeTemp">
         <div class="flex border-gray-200 border-2 mx-auto w-4/5 flex-col rounded-md justify-evenly my-2 p-2">
-            <h1 id="routeTitle"></h1>
+            <div class="flex flex-row justify-between">
+                <h1 id="routeTitle" class="text-lg"></h1>
+                <p id="timeStamp"></p>
+                <img src="./images/delete.svg" alt="delet this route" id="deleteRoute"
+                    style="width: 30px;height: 30px;cursor: pointer;">
+            </div>
+            <br>
             <div class="flex flex-row">
-                <p id="routeDetail"></p>
-                <p id="routeCommuteTime"></p>
-                <p id="routeCrowdLevel"></p>
-                <p id="routeRecomand"></p>
+                <p id="routeDetail" class="mx-1"></p>
+                <p id="routeCommuteTime" class="mx-1"></p>
+                <p id="routeCrowdLevel" class="mx-1"></p>
+                <p id="routeRecomand" class="mx-1"></p>
             </div>
         </div>
     </template>
