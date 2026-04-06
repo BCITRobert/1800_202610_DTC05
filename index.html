@@ -2,32 +2,41 @@
 <html lang="en">
 
 <head>
-    <title>My BCIT Project</title>
+    <title>DTC 05 Landing Page</title>
     <meta name="comp1800 template" content="My 1800 App">
 
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Other libraries go here -->
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
 </head>
 
 <body>
+    <nav-bar></nav-bar>
+    <bottom-bar></bottom-bar>
+   
 
-    <!------------------------------>
-    <!-- Your HTML Layout go here -->
-    <!------------------------------>
-    <!-- Stuff for body goes here -->
+  <div class="px-4 py-20 text-center">
+    <img class="block mx-auto mb-6 w-36 h-36 object-cover rounded" src="./images/bus.jpg" alt="Bus">
+    <h1 class="text-4xl font-bold mb-3">Welcome to Transit Safety!</h1>
+    <div class="max-w-xl mx-auto">
+      <h3 class="text-xl font-semibold mb-2">Take public transit to a new level.</h3>
+      <p class="text-lg text-gray-600 mb-6">Let's make public transit a safer experience for everyone!</p>
+      <div class="flex flex-col sm:flex-row justify-center gap-3">
+        <button class="bg-gray-400 hover:bg-gray-400 text-black font-semibold px-6 py-3 rounded-lg transition" id="goToLogin" onclick="window.location.href='login.html'">Login/Signup</button>
+      </div>
+    </div>
+  </div>
 
+    
+    
 
-    <!---------------------------------------------->
-    <!-- Your own JavaScript functions go here    -->
-    <!---------------------------------------------->
-
-    <!-- Link to scripts of your own -->
-    <!-- <script type="module" src="./src/main.js"></script> -->
-
+    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="./src/components/navbar_component.js"></script>
+    <script type="module" src="./src/components/bottom_component.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>My BCIT Project - User profile</title>
+    <meta name="comp1800 template" content="My 1800 App">
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- shared component definitions -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+
+</head>
+
+<body>
+    <!-- reuse the project navbar -->
+    <nav-bar></nav-bar>
+    <bottom-bar></bottom-bar>
+
+    <h1 class="text-center mt-30">This is the profile page</h1>
+    <div id="userProfile" class="flex flex-col items-center">
+
+    </div>
+    <div id="routeGroup" class="flex flex-col">
+
+    </div>
+
+    
+    <template id="routeTemp">
+        <div class="flex border-gray-200 border-2 mx-auto w-4/5 flex-col rounded-md justify-evenly my-2 p-2">
+            <div class="flex flex-row justify-between">
+                <h1 id="routeTitle" class="text-lg"></h1>
+                <p id="timeStamp"></p>
+                <img src="./images/delete.svg" alt="delet this route" id="deleteRoute"
+                    style="width: 30px;height: 30px;cursor: pointer;">
+            </div>
+            <br>
+            <div class="flex flex-row">
+                <p id="routeDetail" class="mx-1"></p>
+                <p id="routeCommuteTime" class="mx-1"></p>
+                <p id="routeCrowdLevel" class="mx-1"></p>
+                <p id="routeRecomand" class="mx-1"></p>
+            </div>
+        </div>
+    </template>
+
+
+
+    <!-- scripts -->
+    <script type="module" src="./src/components/navbar_component.js"></script>
+    <script type="module" src="./src/components/bottom_component.js"></script>
+    <script type="module" src="./src/app.js"></script>
+    <script type="module" src="./src/profile.js"></script>
+
+</body>
+
+</html>
