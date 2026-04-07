@@ -49,13 +49,13 @@ async function writeRoute() {
     const routeTitle = document.getElementById("title").value;
     const routeCrowdLevel = document.getElementById("crowdLevel").value;
     const routeDetail = document.getElementById("detail").value;
-    const routeRecomand = document.querySelector('input[name="recommand"]:checked')?.value;
+    // const routeRecomand = document.querySelector('input[name="recommand"]:checked')?.value;
 
     const activeButtons = document.querySelectorAll('.routeBtn.active')
     const btnValues = Array.from(activeButtons).map(btn => btn.value);
 
     // Log collected data for verification
-    console.log(routeTitle, routeDetail, routeCrowdLevel, btnValues, routeRecomand);
+    // console.log(routeTitle, routeDetail, routeCrowdLevel, btnValues, routeRecomand);
 
     // simple validation
     if (!routeTitle && !btnValues) {
@@ -76,7 +76,7 @@ async function writeRoute() {
                 crowdLevel: routeCrowdLevel,
                 commutePeriod: btnValues,
                 detail: routeDetail,
-                recomand: routeRecomand,
+                // recomand: routeRecomand,
                 timestamp: serverTimestamp()
             });
 
@@ -155,7 +155,7 @@ async function displayRoutes(routeDisplayContainer) {
         const detail = data.detail || "(No detail)";
         const commuteTime = data.commutePeriod || "(No time specific)"
         const crowdLevel = data.crowdLevel || "(Not specific)"
-        const recomand = data.recomand || "(Not specific)"
+        // const recomand = data.recomand || "(Not specific)"
 
         let crowdLevelText = ``;
         commuteTime.forEach((timePeriod)=>{
@@ -191,9 +191,9 @@ async function displayRoutes(routeDisplayContainer) {
         routeCard.querySelector("#routeCrowdLevel").innerHTML = `
         <span class="font-semibold">Crowding Level</span>: ${crowdLevel}
         `;
-        routeCard.querySelector("#routeRecomand").innerHTML = `
-        <span class="font-semibold">Recommended</span>: ${recomand}
-        `;
+        // routeCard.querySelector("#routeRecomand").innerHTML = `
+        // <span class="font-semibold">Recommended</span>: ${recomand}
+        // `;
 
         routeDisplayContainer.appendChild(routeCard);
     });
