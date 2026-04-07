@@ -22,7 +22,39 @@
     <bottom-bar></bottom-bar>
 
     <h1 class="text-3xl text-center mt-40">Welcome to the main page. Only logged‑in users can see this.</p>
-    <h1 class="text-3xl text-center mt10" id="welcomeMessage"></h1>
+        <h1 class="text-3xl text-center mt10" id="welcomeMessage"></h1>
+
+        <div id="routeGroup" class="flex flex-col">
+            <p class="text-center">Let's take a look at others routes!</p>
+        </div>
+
+        <template id="routeTemp">
+            <div class="flex border-gray-200 border-2 mx-auto w-4/5 flex-col rounded-md justify-evenly my-2 p-2">
+                <div class="flex flex-row justify-between">
+                    <h1 id="routeTitle" class="text-lg"></h1>
+                    <p id="creater"></p>
+                    <p id="timeStamp"></p>
+                    <div>
+                        <img src="./images/recommand-untoggle.svg" alt="recommand this route" id="recommand"
+                        style="width: 30px;height: 30px;cursor: pointer;">
+                        <p id="recommandCount"></p>
+                    </div>
+                    <div>
+                        <img src="./images/disrecommand-untoggle.svg" alt="disrecommand this route" id="disrecommand"
+                        style="width: 30px;height: 30px;cursor: pointer;">
+                        <p id="disrecommandCount"></p>
+                    </div>
+                    
+                </div>
+                <br>
+                <div class="flex flex-row">
+                    <p id="routeDetail" class="mx-1"></p>
+                    <p id="routeCommuteTime" class="mx-1"></p>
+                    <p id="routeCrowdLevel" class="mx-1"></p>
+                    <p id="routeRecomand" class="mx-1"></p>
+                </div>
+            </div>
+        </template>
 
         <!-- scripts -->
         <script type="module" src="./src/components/navbar_component.js"></script>

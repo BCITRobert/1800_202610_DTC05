@@ -32,7 +32,7 @@ async function displayUserProfile() {
 }
 
 
-async function displayRoutes(routeDisplayContainer) {
+async function displayRoutes() {
     const user = auth.currentUser;
     const userID = getDocIdFromUrl()
 
@@ -51,7 +51,7 @@ async function displayRoutes(routeDisplayContainer) {
         const detail = data.detail || "(No detail)";
         const commuteTime = data.commutePeriod || "(No time specific)"
         const crowdLevel = data.crowdLevel || "(Not specific)"
-        const recomand = data.recomand || "(Not specific)"
+        // const recomand = data.recomand || "(Not specific)"
 
         let crowdLevelText = ``;
         commuteTime.forEach((timePeriod)=>{
@@ -87,11 +87,11 @@ async function displayRoutes(routeDisplayContainer) {
         routeCard.querySelector("#routeCrowdLevel").innerHTML = `
         <span class="font-semibold">Crowding Level</span>: ${crowdLevel}
         `;
-        routeCard.querySelector("#routeRecomand").innerHTML = `
-        <span class="font-semibold">Recommended</span>: ${recomand}
-        `;
+        // routeCard.querySelector("#routeRecomand").innerHTML = `
+        // <span class="font-semibold">Recommended</span>: ${recomand}
+        // `;
 
-        routeDisplayContainer.appendChild(routeCard);
+        document.getElementById('routeGroup').appendChild(routeCard);
     });
 
 }
@@ -99,4 +99,4 @@ async function displayRoutes(routeDisplayContainer) {
 
 
 displayUserProfile()
-displayRoutes(document.getElementById('routeGroup'))
+displayRoutes()
