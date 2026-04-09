@@ -2,6 +2,18 @@ import { onAuthReady } from './authentication.js';
 import { db, auth } from "./firebaseConfig.js";
 import { doc, getDocs, collection, addDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
 
+function crowdBadge(level) {
+    const map = {
+        empty:    { bg: "bg-gray-100",   text: "text-gray-500" },
+        light:    { bg: "bg-green-100",  text: "text-green-700" },
+        moderate: { bg: "bg-yellow-100", text: "text-yellow-700" },
+        crowded:  { bg: "bg-orange-100", text: "text-orange-700" },
+        packed:   { bg: "bg-red-100",    text: "text-red-700" },
+    };
+    const style = map[level?.toLowerCase()] || { bg: "bg-gray-100", text: "text-gray-500" };
+    return `<span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium ${style.bg} ${style.text}">${level}</span>`;
+}
+
 function setup() {
     const addRouteContainer = document.getElementById('container')
     const inputForm = document.getElementById('inputForm')
@@ -49,17 +61,17 @@ async function writeRoute() {
     const routeTitle = document.getElementById("title").value;
     const routeCrowdLevel = document.getElementById("crowdLevel").value;
     const routeDetail = document.getElementById("detail").value;
-    const routeRecomand = document.querySelector('input[name="recommand"]:checked')?.value;
+    // const routeRecomand = document.querySelector('input[name="recommand"]:checked')?.value;
 
     const activeButtons = document.querySelectorAll('.routeBtn.active')
     const btnValues = Array.from(activeButtons).map(btn => btn.value);
 
     // Log collected data for verification
-    console.log(routeTitle, routeDetail, routeCrowdLevel, btnValues, routeRecomand);
+    // console.log(routeTitle, routeDetail, routeCrowdLevel, btnValues, routeRecomand);
 
     // simple validation
-    if (!routeTitle && !btnValues) {
-        alert("Please complete all required fields.");
+    if (!routeTitle) {
+        alert("A route name must be given.");
         return;
     }
 
@@ -76,7 +88,7 @@ async function writeRoute() {
                 crowdLevel: routeCrowdLevel,
                 commutePeriod: btnValues,
                 detail: routeDetail,
-                recomand: routeRecomand,
+                // recomand: routeRecomand,
                 timestamp: serverTimestamp()
             });
 
@@ -136,6 +148,7 @@ async function writeRoute() {
     }
 }
 
+
 async function displayRoutes(routeDisplayContainer) {
     const user = auth.currentUser;
     const userID = user.uid
@@ -155,7 +168,7 @@ async function displayRoutes(routeDisplayContainer) {
         const detail = data.detail || "(No detail)";
         const commuteTime = data.commutePeriod || "(No time specific)"
         const crowdLevel = data.crowdLevel || "(Not specific)"
-        const recomand = data.recomand || "(Not specific)"
+        // const recomand = data.recomand || "(Not specific)"
 
         let crowdLevelText = ``;
         commuteTime.forEach((timePeriod)=>{
@@ -191,9 +204,9 @@ async function displayRoutes(routeDisplayContainer) {
         routeCard.querySelector("#routeCrowdLevel").innerHTML = `
         <span class="font-semibold">Crowding Level</span>: ${crowdLevel}
         `;
-        routeCard.querySelector("#routeRecomand").innerHTML = `
-        <span class="font-semibold">Recommended</span>: ${recomand}
-        `;
+        // routeCard.querySelector("#routeRecomand").innerHTML = `
+        // <span class="font-semibold">Recommended</span>: ${recomand}
+        // `;
 
         routeDisplayContainer.appendChild(routeCard);
     });
