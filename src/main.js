@@ -1,20 +1,21 @@
 import { onAuthReady, logoutUser } from './authentication.js';
-import { db } from "./firebaseConfig.js";
-import { doc, setDoc, collection, getDocs, getDoc, updateDoc } from "firebase/firestore";
+import { db, auth } from "./firebaseConfig.js";
+import { doc, setDoc, collection, getDocs, getDoc, updateDoc, arrayRemove, arrayUnion } from "firebase/firestore";
 import protobuf from "protobufjs";
 
 function setup() {
     $(document).on("click", "#logoutBtn", logoutUser);
     // watch auth state and update page accordingly
     onAuthReady(async (currentUser) => {
-        if (user) {
-            const userRef = doc(db, "users", user.uid)
+        if (currentUser) {
+            const userRef = doc(db, "users", currentUser.uid)
             const userData = { name: currentUser.displayName, email: currentUser.email, avatar: currentUser.photoURL }
             console.log(userRef, userData)
             await setDoc(userRef, userData)
             document.getElementById('welcomeMessage').textContent = `Hello, ${currentUser.displayName || currentUser.email}!`;
+            const currentUserUid = currentUser.uid
             loadGTFS()
-            iterateUsers(currentUser)
+            iterateUsers(currentUserUid)
         } else {
             document.getElementById('welcomeMessage').textContent = 'Not logged in';
         }
@@ -42,20 +43,20 @@ async function loadGTFS() {
 }
 
 
-async function iterateUsers(currentUser) {
-console.log(currentUser)
+async function iterateUsers(currentUserUid) {
     const usersRef = collection(db, "users")
     const usersSnap = await getDocs(usersRef)
     usersSnap.forEach((user) => {
         const userID = user.id
+        let isCurrentUser = false
         const username = user.data().name
         const routesRef = collection(db, "users", userID, "routes")
-        displayRoutes(userID, username, routesRef)
+        displayRoutes(currentUserUid, userID, username, routesRef, isCurrentUser)
     })
 }
 
 
-async function displayRoutes(userID, username, routesRef) {
+async function displayRoutes(currentUserUid, userID, username, routesRef, isCurrentUser) {
     const routesSnap = await getDocs(routesRef)
     routesSnap.forEach((routeSnap) => {
         const docID = routeSnap.id
@@ -64,7 +65,6 @@ async function displayRoutes(userID, username, routesRef) {
         const detail = data.detail || "(No detail)";
         const commuteTime = data.commutePeriod || "(No time specific)"
         const crowdLevel = data.crowdLevel || "(Not specific)"
-        // const recomand = data.recomand || "(Not specific)"
 
         let crowdLevelText = ``;
         commuteTime.forEach((timePeriod) => {
@@ -106,29 +106,32 @@ async function displayRoutes(userID, username, routesRef) {
         const disrecomandBtn = routeCard.querySelector('#disrecommand')
         const recomandCounter = routeCard.querySelector('#recommandCount')
         const disrecomandCounter = routeCard.querySelector('#disrecommandCount')
-        toggleRecoomand(userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, false)
-        toggleDisrecoomand(userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, false)
-        recomandBtn.addEventListener("click", () => toggleRecoomand(userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, true))
-        disrecomandBtn.addEventListener("click", () => toggleDisrecoomand(userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, true))
+        toggleRecommand(currentUserUid, userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, false)
+        toggleDisrecommand(currentUserUid, userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, false)
+        recomandBtn.addEventListener("click", () => toggleRecommand(currentUserUid, userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, true))
+        disrecomandBtn.addEventListener("click", () => toggleDisrecommand(currentUserUid, userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, true))
 
 
         document.getElementById('routeGroup').appendChild(routeCard);
     })
 }
-async function displayBtn(isHtmlTypeRecommand, btnHTML, countHTML, routeRef) {
+async function displayBtn(currentUserUid, isHtmlTypeRecommand, btnHTML, countHTML, routeRef) {
     const routeSnap = await getDoc(routeRef);
     const routeData = routeSnap.data();
-    const isRecomand = routeData.recomand;
-    const recomandCount = routeData.recomandCount;
-    const isDisrecomand = routeData.disrecomand;
-    const disrecomandCount = routeData.disrecomandCount;
+    const recommander = routeData.recommander
+    const disrecommander = routeData.disrecommander
+    const isRecomand = recommander.includes(currentUserUid)
+    const isDisrecomand = disrecommander.includes(currentUserUid)
+
     if (isHtmlTypeRecommand) {
         if (isRecomand) {
+            console.log("recommand toggled")
             btnHTML.src = "./images/recommand-toggled.svg"
         } else {
+            console.log("recommand untoggled")
             btnHTML.src = "./images/recommand-untoggle.svg"
         } 
-        countHTML.innerHTML = recomandCount
+        countHTML.innerHTML = recommander.length
     }
     else {
         if (isDisrecomand) {
@@ -136,93 +139,85 @@ async function displayBtn(isHtmlTypeRecommand, btnHTML, countHTML, routeRef) {
         } else {
             btnHTML.src = "./images/disrecommand-untoggle.svg"
         }
-        countHTML.innerHTML = disrecomandCount
+        countHTML.innerHTML = disrecommander.length
     }
     
 }
 
 
-async function toggleRecoomand(isCurrentUser, userId, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, isClick) {
+async function toggleRecommand(currentUserUid, userId, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, isClick) {
     const routeRef = doc(db, "users", userId, "routes", docID);
     const routeSnap = await getDoc(routeRef);
     const routeData = routeSnap.data();
-    const isRecomand = routeData.recomand;
-    const recomandCount = routeData.recomandCount;
-    const isDisrecomand = routeData.disrecomand;
-    const disrecomandCount = routeData.disrecomandCount;
-    console.log("recommand in firebase before this click:", isRecomand)
+    const recommander = routeData.recommander
+    const disrecommander = routeData.disrecommander
+    const isRecomand = recommander.includes(currentUserUid)
+    const isDisrecomand = disrecommander.includes(currentUserUid)
     if (isClick) {
         try {
             if (isRecomand) {
                 console.log("cancel recommand")
                 // cancel recommand
                 await updateDoc(routeRef, {
-                    recomand: false,
-                    recomandCount: recomandCount - 1
+                    recommander: arrayRemove(currentUserUid)
                 })
             } else {
-                console.log("recommand")
+                console.log("recommanded")
                 await updateDoc(routeRef, {
-                    recomand: true,
-                    recomandCount: recomandCount + 1
+                    recommander: arrayUnion(currentUserUid)
                 });
                 if (isDisrecomand) {
                     console.log("cancel disrecommand")
                     await updateDoc(routeRef, {
-                        disrecomand: false,
-                        disrecomandCount: disrecomandCount - 1
+                        disrecommander: arrayRemove(currentUserUid)
                     });
-                    displayBtn(false, disrecomandBtn, disrecomandCounter, routeRef)
+                    displayBtn(currentUserUid, false, disrecomandBtn, disrecomandCounter, routeRef)
                 }
             }
         } catch (err) {
             console.log(err)
         }
     }
-    displayBtn(true, recomandBtn, recomandCounter, routeRef)
+    displayBtn(currentUserUid, true, recomandBtn, recomandCounter, routeRef)
 
 }
 
 
 
-async function toggleDisrecoomand(isCurrentUser, userId, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, isClick) {
+async function toggleDisrecommand(currentUserUid, userId, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, isClick) {
     const routeRef = doc(db, "users", userId, "routes", docID);
     const routeSnap = await getDoc(routeRef);
     const routeData = routeSnap.data();
-    const isDisrecomand = routeData.disrecomand;
-    const disrecomandCount = routeData.disrecomandCount;
-    const isRecomand = routeData.recomand;
-    const recomandCount = routeData.recomandCount;
-    console.log("disrecommand in firebase before this click:", isRecomand)
+    const recommander = routeData.recommander
+    const disrecommander = routeData.disrecommander
+    const isDisrecomand = disrecommander.includes(currentUserUid)
+    const isRecomand = recommander.includes(currentUserUid)
     if (isClick) {
         try {
             // cancel disrecommand
             if (isDisrecomand) {
                 console.log("cancel disrecommand")
                 await updateDoc(routeRef, {
-                    disrecomand: false,
-                    disrecomandCount: disrecomandCount - 1
+                    disrecommander: arrayRemove(currentUserUid)
                 })
             } else {
-                console.log("disrecommand")
+                console.log("disrecommanded")
                 await updateDoc(routeRef, {
-                    disrecomand: true,
-                    disrecomandCount: disrecomandCount + 1
+                    disrecommander: arrayUnion(currentUserUid)
                 });
                 if (isRecomand) {
                     console.log("cancel recommand")
                     await updateDoc(routeRef, {
-                        recomand: false,
-                        recomandCount: recomandCount - 1
+                        recommander: arrayRemove(currentUserUid)
                     });
-                    displayBtn(true, recomandBtn, recomandCounter, routeRef)
+                    displayBtn(currentUserUid, true, recomandBtn, recomandCounter, routeRef)
                 }
             }
         } catch (err) {
             console.log(err)
         }
     }
-    displayBtn(false, disrecomandBtn, disrecomandCounter, routeRef)
+    displayBtn(currentUserUid, false, disrecomandBtn, disrecomandCounter, routeRef)
 
 }
 

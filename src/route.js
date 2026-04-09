@@ -79,10 +79,8 @@ async function writeRoute() {
                 detail: routeDetail,
                 // recomand: routeRecomand,
                 timestamp: serverTimestamp(),
-                disrecomand: false,
-                disrecomandCount: 0,
-                recomand: false,
-                recomandCount: 0
+                recommander: [],
+                disrecommander: [],
             });
 
             console.log("Review successfully written!");

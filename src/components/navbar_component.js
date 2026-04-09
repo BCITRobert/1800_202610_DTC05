@@ -24,6 +24,7 @@ class Navbar extends HTMLElement {
     updateAuth() {
         const authControls = this.querySelector('#authControls')
         const mainBtn = this.querySelector("#mainIcon1")
+        // const searchBtn = this.querySelector("#search")
         if (!authControls) return;
         onAuthStateChanged(auth, user => {
             const btn = authControls.querySelector('#goToLogin');
