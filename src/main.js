@@ -1,6 +1,6 @@
 import { onAuthReady, logoutUser } from './authentication.js';
 import { db } from "./firebaseConfig.js";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, collection, getDocs, getDoc, updateDoc } from "firebase/firestore";
 import protobuf from "protobufjs";
 
 function setup() {
@@ -14,6 +14,7 @@ function setup() {
             await setDoc(userRef, userData)
             document.getElementById('welcomeMessage').textContent = `Hello, ${user.displayName || user.email}!`;
             loadGTFS()
+            iterateUsers(user)
         } else {
             document.getElementById('welcomeMessage').textContent = 'Not logged in';
         }
@@ -40,6 +41,110 @@ async function loadGTFS() {
     // console.log(object);
 }
 
-loadGTFS();
+
+async function iterateUsers() {
+
+    const usersRef = collection(db, "users")
+    const usersSnap = await getDocs(usersRef)
+    usersSnap.forEach((user) => {
+        const userID = user.id
+        const username = user.data().name
+        const routesRef = collection(db, "users", userID, "routes")
+        displayRoutes(userID, username, routesRef)
+    })
+}
+
+
+async function displayRoutes(userID, username, routesRef) {
+    const routesSnap = await getDocs(routesRef)
+        routesSnap.forEach((routeSnap) => {
+            const docID = routeSnap.id
+            const data = routeSnap.data()
+            const title = data.title || "(No title)";
+            const detail = data.detail || "(No detail)";
+            const commuteTime = data.commutePeriod || "(No time specific)"
+            const crowdLevel = data.crowdLevel || "(Not specific)"
+            // const recomand = data.recomand || "(Not specific)"
+
+            let crowdLevelText = ``;
+            commuteTime.forEach((timePeriod) => {
+                crowdLevelText += ` ${timePeriod}, `;
+            })
+
+            // Format the time
+            let time = "";
+            if (data.timestamp?.toDate) {
+                time = data.timestamp.toDate().toLocaleString();
+            }
+
+            // Clone the template and fill in the fields
+            const routeCard = document.getElementById("routeTemp").content.cloneNode(true);
+
+            routeCard.querySelector("#routeTitle").innerHTML = `
+        <span class="font-bold">Route Title</span>: ${title}
+        `;
+            routeCard.querySelector("#creater").innerHTML = `
+        <span class="font-bold">Creater</span>: ${username}
+        `;
+            routeCard.querySelector("#timeStamp").innerHTML = `
+        <span class="font-bold">Time Created</span>: ${time}
+        `;
+
+            routeCard.querySelector("#routeDetail").innerHTML = `
+        <span class="font-semibold">Detail</span>: ${detail}
+        `;
+            routeCard.querySelector("#routeCommuteTime").innerHTML = `
+        <span class="font-semibold">Commute Time</span>: ${commuteTime}
+        `;
+            routeCard.querySelector("#routeCrowdLevel").innerHTML = `
+        <span class="font-semibold">Crowding Level</span>: ${crowdLevel}
+        `;
+        //     routeCard.querySelector("#routeRecomand").innerHTML = `
+        // <span class="font-semibold">Recommended</span>: ${recomand}
+        // `;
+
+        routeCard.querySelector('#recommand').addEventListener("click", () => toggleRecoomand(userID, docID))
+            // routeCard.querySelector('#disrecommand').addEventListener("click", toggleRecoomand(userID, docID))
+
+
+            document.getElementById('routeGroup').appendChild(routeCard);
+        })
+}
+
+
+
+
+async function toggleRecoomand(userId, docID) {
+    console.log("recommand",docID)
+    const routeRef = doc(db, "users", userId, "routes", docID);
+    const routeSnap = await getDoc(routeRef);
+    const routeData = routeSnap.data() || {};
+    const recomand = routeData.recomand || [];
+    const recomandCount = routeData.recomandCount || 0;
+    console.log(recomandCount)
+    const isRecomand = recomand.includes(docID);
+    const icon = document.getElementById("recommand"); // get a pointer to icon DOM
+
+    try {
+        if (isRecomand) {
+            await updateDoc(routeRef, {
+                recomand: false,
+                recomandCount: recomandCount - 1
+            })
+            // db, "users", userId, "routes", docID
+            icon.src = "./images/recommand-untoggle.svg"
+        } else {
+            await updateDoc(routeRef, {
+                recomand: true,
+                recomandCount: recomandCount + 1
+            });
+            icon.src = "./images/recommand-toggled.svg"
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 
 setup()
+
