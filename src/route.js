@@ -3,15 +3,11 @@ import { db, auth } from "./firebaseConfig.js";
 import { doc, getDocs, collection, addDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
 
 function timeBadge(period) {
-    const colours = [
-        {bg: "#62B5B4", text: "#000000"}, 
-        {bg: "#62B5B4", text: "#000000"}, 
-        {bg: "#62B5B4", text: "#000000"}, 
-        {bg: "#62B5B4", text: "#000000"},
-    ]
+    const colours =  {bg: "#62B5B4", text: "#000000"}
+    
     const index = period.length % colours.length;
     const {bg, text} = colours[index];
-    return `<span style="background-color:${bg}; color:${text}; display:inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; margin-right: 4px;">${period}</span>`;
+    return `<span style="background-color:${bg} color:${text} display:inline-block padding: 2px 8px, font-size: 0.75rem, font-weight: 500, margin-right: 4px">${period}</span>`;
 }
 
 function setup() {
