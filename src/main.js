@@ -3,6 +3,18 @@ import { db } from "./firebaseConfig.js";
 import { doc, setDoc, collection, getDocs, getDoc, updateDoc } from "firebase/firestore";
 import protobuf from "protobufjs";
 
+function timeBadge(period) {
+    const colours = [
+        {bg: "#62B5B4", text: "#000000"}, 
+        {bg: "#62B5B4", text: "#000000"}, 
+        {bg: "#62B5B4", text: "#000000"}, 
+        {bg: "#62B5B4", text: "#000000"},
+    ]
+    const index = period.length % colours.length;
+    const {bg, text} = colours[index];
+    return `<span style="background-color:${bg}; color:${text}; display:inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; margin-right: 4px;">${period}</span>`;
+}
+
 function setup() {
     $(document).on("click", "#logoutBtn", logoutUser);
     // watch auth state and update page accordingly
@@ -62,9 +74,10 @@ async function displayRoutes(userID, username, routesRef) {
             const data = routeSnap.data()
             const title = data.title || "(No title)";
             const detail = data.detail || "(No detail)";
-            const commuteTime = data.commutePeriod || "(No time specific)"
+            const commuteTime = data.commutePeriod;
             const crowdLevel = data.crowdLevel || "(Not specific)"
             // const recomand = data.recomand || "(Not specific)"
+            const timeBadges = commuteTime.length ? commuteTime.map(t => timeBadge(t)).join(""): "(No time specific)";
 
             let crowdLevelText = ``;
             commuteTime.forEach((timePeriod) => {
@@ -84,7 +97,7 @@ async function displayRoutes(userID, username, routesRef) {
         <span class="font-bold">Route Title</span>: ${title}
         `;
             routeCard.querySelector("#creater").innerHTML = `
-        <span class="font-bold">Creater</span>: ${username}
+        <span class="font-bold">Creator</span>: ${username}
         `;
             routeCard.querySelector("#timeStamp").innerHTML = `
         <span class="font-bold">Time Created</span>: ${time}
@@ -94,7 +107,7 @@ async function displayRoutes(userID, username, routesRef) {
         <span class="font-semibold">Detail</span>: ${detail}
         `;
             routeCard.querySelector("#routeCommuteTime").innerHTML = `
-        <span class="font-semibold">Commute Time</span>: ${commuteTime}
+        <span class="font-semibold">Commute Time</span>: ${timeBadges}
         `;
             routeCard.querySelector("#routeCrowdLevel").innerHTML = `
         <span class="font-semibold">Crowding Level</span>: ${crowdLevel}
