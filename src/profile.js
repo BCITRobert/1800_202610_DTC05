@@ -1,5 +1,5 @@
 import { db, auth } from "./firebaseConfig.js";
-import { doc, getDoc, onSnapshot, getDocs, collection, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, onSnapshot, getDocs, collection, deleteDoc } from "firebase/firestore";
 
 
 function getDocIdFromUrl() {
@@ -20,11 +20,65 @@ async function displayUserProfile() {
         const email = user.email;
         const avatar = user.avatar;
 
+        const currentUser = auth.currentUser;
+        const ownProfile = currentUser && currentUser.uid === id;
+
+        const avatarHTML = avatar
+            ? `<img src="${avatar}" alt="${name}'s avatar" class="w-24 h-24 rounded-full object-cover">`
+            : `<div class="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center text-white text-3xl font-bold">
+                  ${name[0].toUpperCase()}
+               </div>`;
+        
         document.getElementById("userProfile").innerHTML = `
-            <img src="${avatar}" alt="${name}'s avatar" width="100">
-            <h2>Name: ${name}</h2>
-            <p>Email: ${email}</p>
+            <div class="relative cursor-pointer group" id="avatarWrapper">
+                ${avatarHTML}
+                ${ownProfile ? `
+                <div class="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span class="text-white text-xs font-semibold">Edit</span>
+                </div>
+                <input type="file" id="avatarInput" accept="image/*" class="hidden">
+                ` : ''}
+            </div>
+            <h2><span class="font-semibold">Name:</span> ${name}</h2>
+            <p><span class="font-semibold">Email:</span> ${email}</p>
+            ${ownProfile ? `<p id="uploadStatus" class="text-sm text-gray-500 mt-1"></p>` : ''}
         `;
+
+        if (ownProfile) {
+            document.getElementById("avatarWrapper").addEventListener("click", () => {
+                document.getElementById("avatarInput").click();
+            })
+        };
+
+        document.getElementById("avatarInput").addEventListener("change", async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const status = document.getElementById("uploadStatus");
+
+                if (file.size > 500 * 1024) {
+                    status.textContent = "Image too large. Please pick one under 500KB.";
+                    return;
+                }
+
+                status.textContent = "Uploading Image...";
+            
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const base64 = e.target.result;
+                    try {
+                        await updateDoc(userRef, {avatar: base64});
+                        document.querySelector("#avatarWrapper img").firstElementChild.outerHTML =
+                        `<img src="${base64}" class=w-24 h-24 rounded-full object-cover">`;
+                        status.textContent = "Profile picture updated!";
+                        setTimeout(() => status.textContent = "", 3000);
+                    } catch (err) {
+                        console.error("Upload failed:", err);
+                        status.textContent = "Upload failed. Please try again.";
+                    }
+                };
+                reader.readAsDataURL(file);
+        });
 
     } catch (error) {
         console.log("Error loading user profile:", error);
