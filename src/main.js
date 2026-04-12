@@ -74,7 +74,7 @@ async function displayRoutes(userID, username, routesRef) {
             const data = routeSnap.data()
             const title = data.title || "(No title)";
             const detail = data.detail || "(No detail)";
-            const commuteTime = data.commutePeriod;
+            const commuteTime = data.commutePeriod || [];
             const crowdLevel = data.crowdLevel || "(Not specific)"
             // const recomand = data.recomand || "(Not specific)"
             const timeBadges = commuteTime.length ? commuteTime.map(t => timeBadge(t)).join(""): "(No time specific)";
