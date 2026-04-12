@@ -2,16 +2,16 @@ import { onAuthReady } from './authentication.js';
 import { db, auth } from "./firebaseConfig.js";
 import { doc, getDocs, collection, addDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
 
-function crowdBadge(level) {
-    const map = {
-        empty:    { bg: "bg-gray-100",   text: "text-gray-500" },
-        light:    { bg: "bg-green-100",  text: "text-green-700" },
-        moderate: { bg: "bg-yellow-100", text: "text-yellow-700" },
-        crowded:  { bg: "bg-orange-100", text: "text-orange-700" },
-        packed:   { bg: "bg-red-100",    text: "text-red-700" },
-    };
-    const style = map[level?.toLowerCase()] || { bg: "bg-gray-100", text: "text-gray-500" };
-    return `<span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium ${style.bg} ${style.text}">${level}</span>`;
+function timeBadge(period) {
+    const colours = [
+        {bg: "#62B5B4", text: "#000000"}, 
+        {bg: "#62B5B4", text: "#000000"}, 
+        {bg: "#62B5B4", text: "#000000"}, 
+        {bg: "#62B5B4", text: "#000000"},
+    ]
+    const index = period.length % colours.length;
+    const {bg, text} = colours[index];
+    return `<span style="background-color:${bg}; color:${text}; display:inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; margin-right: 4px;">${period}</span>`;
 }
 
 function setup() {
@@ -166,9 +166,11 @@ async function displayRoutes(routeDisplayContainer) {
 
         const title = data.title || "(No title)";
         const detail = data.detail || "(No detail)";
-        const commuteTime = data.commutePeriod || "(No time specific)"
+        const commuteTime = data.commutePeriod || [];
         const crowdLevel = data.crowdLevel || "(Not specific)"
         // const recomand = data.recomand || "(Not specific)"
+
+        const timeBadges = commuteTime.length ? commuteTime.map(t => timeBadge(t)).join(""): "(No time specific)";
 
         let crowdLevelText = ``;
         commuteTime.forEach((timePeriod)=>{
@@ -199,10 +201,10 @@ async function displayRoutes(routeDisplayContainer) {
         <span class="font-semibold">Detail</span>: ${detail}
         `;
         routeCard.querySelector("#routeCommuteTime").innerHTML = `
-        <span class="font-semibold">Commute Time</span>: ${commuteTime}
+        <span class="font-semibold">Commute Time Periods</span>: ${timeBadges}
         `;
         routeCard.querySelector("#routeCrowdLevel").innerHTML = `
-        <span class="font-semibold">Crowding Level</span>: ${crowdLevel}
+        <span class="font-semibold">Crowd Level</span>: ${crowdLevel}
         `;
         // routeCard.querySelector("#routeRecomand").innerHTML = `
         // <span class="font-semibold">Recommended</span>: ${recomand}
