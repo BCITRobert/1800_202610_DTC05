@@ -3,11 +3,9 @@ import { db, auth } from "./firebaseConfig.js";
 import { doc, getDocs, collection, addDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
 
 function timeBadge(period) {
-    const colours =  {bg: "#62B5B4", text: "#000000"}
-    
-    const index = period.length % colours.length;
-    const {bg, text} = colours[index];
-    return `<span style="background-color:${bg} color:${text} display:inline-block padding: 2px 8px, font-size: 0.75rem, font-weight: 500, margin-right: 4px">${period}</span>`;
+    const bg = "#62B5B4";
+    const text = "#000000";
+    return `<span style="background-color:${bg}; color:${text}; display:inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 500; margin-right: 4px;">${period}</span>`;
 }
 
 function setup() {
@@ -167,7 +165,7 @@ async function displayRoutes(routeDisplayContainer) {
         // const recomand = data.recomand || "(Not specific)"
 
         const timeBadges = commuteTime.length ? commuteTime.map(t => timeBadge(t)).join(""): "(No time specific)";
-
+        console.log(timeBadges)
         let crowdLevelText = ``;
         commuteTime.forEach((timePeriod)=>{
             crowdLevelText += ` ${timePeriod}, `;
