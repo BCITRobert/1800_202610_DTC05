@@ -7,6 +7,12 @@ function getDocIdFromUrl() {
     return params.get("userID");
 }
 
+function timeBadge(period) {
+    const bg = "#62B5B4";
+    const text = "#000000";
+    return `<span style="background-color:${bg}; color:${text}; display:inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 500; margin-right: 4px;">${period}</span>`;
+}
+
 async function displayUserProfile() {
     const id = getDocIdFromUrl();
 
@@ -24,8 +30,7 @@ async function displayUserProfile() {
         const ownProfile = currentUser && currentUser.uid === id;
 
         const avatarHTML = avatar
-            ? `<img src="${avatar}" alt="${name}'s avatar" class="w-24 h-24 rounded-full object-cover">`
-            : `<div class="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center text-white text-3xl font-bold">
+            ? `<img src="${avatar}" alt="${name}'s avatar" class="w-24 h-24 rounded-full object-cover">` : `<div class="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center text-white text-3xl font-bold">
                   ${name[0].toUpperCase()}
                </div>`;
         
@@ -36,40 +41,33 @@ async function displayUserProfile() {
                 <div class="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <span class="text-white text-xs font-semibold">Edit</span>
                 </div>
-                <input type="file" id="avatarInput" accept="image/*" class="hidden">
-                ` : ''}
+                <input type="file" id="avatarInput" accept="image/*" class="hidden">`: ''}
             </div>
+            ${ownProfile && avatar ? `<button id="removeAvatar" class="text-sm text-red-500 mt-1">Remove Photo</button>`: ''}
             <h2><span class="font-semibold">Name:</span> ${name}</h2>
             <p><span class="font-semibold">Email:</span> ${email}</p>
-            ${ownProfile ? `<p id="uploadStatus" class="text-sm text-gray-500 mt-1"></p>` : ''}
+            ${ownProfile ? `<p id="uploadStatus" class="text-sm text-green-500 mt-1"></p>` : ''}
         `;
 
         if (ownProfile) {
             document.getElementById("avatarWrapper").addEventListener("click", () => {
                 document.getElementById("avatarInput").click();
-            })
-        };
-
-        document.getElementById("avatarInput").addEventListener("change", async (e) => {
+            });
+            document.getElementById("avatarInput").addEventListener("change", async (e) => {
                 const file = e.target.files[0];
-                if (!file) return;
+                if (!file) 
+                    return;
 
                 const status = document.getElementById("uploadStatus");
-
-                if (file.size > 500 * 1024) {
-                    status.textContent = "Image too large. Please pick one under 500KB.";
-                    return;
-                }
-
                 status.textContent = "Uploading Image...";
-            
+                    
                 const reader = new FileReader();
                 reader.onload = async (e) => {
                     const base64 = e.target.result;
                     try {
                         await updateDoc(userRef, {avatar: base64});
-                        document.querySelector("#avatarWrapper img").firstElementChild.outerHTML =
-                        `<img src="${base64}" class=w-24 h-24 rounded-full object-cover">`;
+                        document.querySelector("#avatarWrapper").firstElementChild.outerHTML =
+                            `<img src="${base64}" class=w-24 h-24 rounded-full object-cover">`;
                         status.textContent = "Profile picture updated!";
                         setTimeout(() => status.textContent = "", 3000);
                     } catch (err) {
@@ -80,6 +78,19 @@ async function displayUserProfile() {
                 reader.readAsDataURL(file);
         });
 
+        if (avatar) {
+            document.getElementById("removeAvatar").addEventListener("click", async () => {
+                await updateDoc(userRef, {avatar: ""});
+                document.querySelector("#avatarWrapper").firstElementChild.outerHTML =
+                `<div class="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center text-white text-3xl font-bold">
+                            ${name[0].toUpperCase()}
+                </div>`;
+                document.getElementById("removeAvatar").remove();
+            });
+        }
+
+        };
+        
     } catch (error) {
         console.log("Error loading user profile:", error);
     }
@@ -103,9 +114,10 @@ async function displayRoutes() {
 
         const title = data.title || "(No title)";
         const detail = data.detail || "(No detail)";
-        const commuteTime = data.commutePeriod || "(No time specific)"
+        const commuteTime = data.commutePeriod || [];
         const crowdLevel = data.crowdLevel || "(Not specific)"
         // const recomand = data.recomand || "(Not specific)"
+        const timeBadges = commuteTime.length ? commuteTime.map(t => timeBadge(t)).join(""): "(No time specific)";
 
         let crowdLevelText = ``;
         commuteTime.forEach((timePeriod)=>{
@@ -136,10 +148,10 @@ async function displayRoutes() {
         <span class="font-semibold">Detail</span>: ${detail}
         `;
         routeCard.querySelector("#routeCommuteTime").innerHTML = `
-        <span class="font-semibold">Commute Time</span>: ${commuteTime}
+        <span class="font-semibold">Commute Time Periods</span>: ${timeBadges}
         `;
         routeCard.querySelector("#routeCrowdLevel").innerHTML = `
-        <span class="font-semibold">Crowding Level</span>: ${crowdLevel}
+        <span class="font-semibold">Crowd Level</span>: ${crowdLevel}
         `;
         // routeCard.querySelector("#routeRecomand").innerHTML = `
         // <span class="font-semibold">Recommended</span>: ${recomand}
