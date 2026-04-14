@@ -88,7 +88,7 @@ async function displayUserProfile() {
         // remove button
         if (avatar) {
             document.getElementById("removeAvatar").addEventListener("click", async () => {
-                await updateDoc(userRef, {avatar: ""});
+                await updateDoc(userRef, {avatar: null});
                 document.querySelector("#avatarWrapper").firstElementChild.outerHTML =
                 `<div class="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center text-white text-3xl font-bold">
                     ${name[0].toUpperCase()}
