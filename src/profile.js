@@ -7,16 +7,19 @@ function getDocIdFromUrl() {
     return params.get("userID");
 }
 
+// coloured time badge
 function timeBadge(period) {
     const bg = "#62B5B4";
     const text = "#000000";
     return `<span style="background-color:${bg}; color:${text}; display:inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 500; margin-right: 4px;">${period}</span>`;
 }
 
+// fetches and displayers user profile info
 async function displayUserProfile() {
     const id = getDocIdFromUrl();
 
     try {
+        // gets user document from firestore
         const userRef = doc(db, "users", id);
         const userSnap = await getDoc(userRef);
         const user = userSnap.data();
@@ -29,11 +32,13 @@ async function displayUserProfile() {
         const currentUser = auth.currentUser;
         const ownProfile = currentUser && currentUser.uid === id;
 
+        // shows avatar image if it exists, otherwise it will show the name initial
         const avatarHTML = avatar
             ? `<img src="${avatar}" alt="${name}'s avatar" class="w-24 h-24 rounded-full object-cover">` : `<div class="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center text-white text-3xl font-bold">
                   ${name[0].toUpperCase()}
                </div>`;
         
+        // renders profile section
         document.getElementById("userProfile").innerHTML = `
             <div class="relative cursor-pointer group" id="avatarWrapper">
                 ${avatarHTML}
@@ -53,6 +58,7 @@ async function displayUserProfile() {
             document.getElementById("avatarWrapper").addEventListener("click", () => {
                 document.getElementById("avatarInput").click();
             });
+            // uploads if file is selected
             document.getElementById("avatarInput").addEventListener("change", async (e) => {
                 const file = e.target.files[0];
                 if (!file) 
@@ -61,15 +67,16 @@ async function displayUserProfile() {
                 const status = document.getElementById("uploadStatus");
                 status.textContent = "Uploading Image...";
                     
+                // reads file as base64 and saves it to Firestore
                 const reader = new FileReader();
-                reader.onload = async (e) => {
+                reader.onload = async (e) => { // must give a lifecycle event since FileReader is asynchronous which is onload
                     const base64 = e.target.result;
                     try {
                         await updateDoc(userRef, {avatar: base64});
                         document.querySelector("#avatarWrapper").firstElementChild.outerHTML =
                             `<img src="${base64}" class=w-24 h-24 rounded-full object-cover">`;
                         status.textContent = "Profile picture updated!";
-                        setTimeout(() => status.textContent = "", 3000);
+                        setTimeout(() => status.textContent = "", 3000); // "Profile picture updated!" message shows up for 3 seconds
                     } catch (err) {
                         console.error("Upload failed:", err);
                         status.textContent = "Upload failed. Please try again.";
@@ -78,12 +85,13 @@ async function displayUserProfile() {
                 reader.readAsDataURL(file);
         });
 
+        // remove button
         if (avatar) {
             document.getElementById("removeAvatar").addEventListener("click", async () => {
                 await updateDoc(userRef, {avatar: ""});
                 document.querySelector("#avatarWrapper").firstElementChild.outerHTML =
                 `<div class="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center text-white text-3xl font-bold">
-                            ${name[0].toUpperCase()}
+                    ${name[0].toUpperCase()}
                 </div>`;
                 document.getElementById("removeAvatar").remove();
             });
@@ -117,6 +125,8 @@ async function displayRoutes() {
         const commuteTime = data.commutePeriod || [];
         const crowdLevel = data.crowdLevel || "(Not specific)"
         // const recomand = data.recomand || "(Not specific)"
+
+        // generates coloured badge for time periods
         const timeBadges = commuteTime.length ? commuteTime.map(t => timeBadge(t)).join(""): "(No time specific)";
 
         let crowdLevelText = ``;
