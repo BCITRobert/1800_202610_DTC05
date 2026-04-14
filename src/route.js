@@ -2,6 +2,12 @@ import { onAuthReady } from './authentication.js';
 import { db, auth } from "./firebaseConfig.js";
 import { doc, getDocs, collection, addDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
 
+function timeBadge(period) {
+    const bg = "#62B5B4";
+    const text = "#000000";
+    return `<span style="background-color:${bg}; color:${text}; display:inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 500; margin-right: 4px;">${period}</span>`;
+}
+
 function setup() {
     const addRouteContainer = document.getElementById('container')
     const inputForm = document.getElementById('inputForm')
@@ -59,8 +65,8 @@ async function writeRoute() {
     // console.log(routeTitle, routeDetail, routeCrowdLevel, btnValues, routeRecomand);
 
     // simple validation
-    if (!routeTitle && !btnValues) {
-        alert("Please complete all required fields.");
+    if (!routeTitle) {
+        alert("A route name must be given.");
         return;
     }
 
@@ -139,6 +145,7 @@ async function writeRoute() {
     }
 }
 
+
 async function displayRoutes(routeDisplayContainer) {
     const user = auth.currentUser;
     const userID = user.uid
@@ -156,10 +163,12 @@ async function displayRoutes(routeDisplayContainer) {
 
         const title = data.title || "(No title)";
         const detail = data.detail || "(No detail)";
-        const commuteTime = data.commutePeriod || "(No time specific)"
+        const commuteTime = data.commutePeriod || [];
         const crowdLevel = data.crowdLevel || "(Not specific)"
         // const recomand = data.recomand || "(Not specific)"
 
+        const timeBadges = commuteTime.length ? commuteTime.map(t => timeBadge(t)).join(""): "(No time specific)";
+        console.log(timeBadges)
         let crowdLevelText = ``;
         commuteTime.forEach((timePeriod)=>{
             crowdLevelText += ` ${timePeriod}, `;
@@ -189,10 +198,10 @@ async function displayRoutes(routeDisplayContainer) {
         <span class="font-semibold">Detail</span>: ${detail}
         `;
         routeCard.querySelector("#routeCommuteTime").innerHTML = `
-        <span class="font-semibold">Commute Time</span>: ${commuteTime}
+        <span class="font-semibold">Commute Time Periods</span>: ${timeBadges}
         `;
         routeCard.querySelector("#routeCrowdLevel").innerHTML = `
-        <span class="font-semibold">Crowding Level</span>: ${crowdLevel}
+        <span class="font-semibold">Crowd Level</span>: ${crowdLevel}
         `;
         // routeCard.querySelector("#routeRecomand").innerHTML = `
         // <span class="font-semibold">Recommended</span>: ${recomand}

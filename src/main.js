@@ -3,17 +3,22 @@ import { db, auth } from "./firebaseConfig.js";
 import { doc, setDoc, collection, getDocs, getDoc, updateDoc, arrayRemove, arrayUnion } from "firebase/firestore";
 import protobuf from "protobufjs";
 
+function timeBadge(period) {
+    const bg = "#62B5B4";
+    const text = "#000000";
+    return `<span style="background-color:${bg}; color:${text}; display:inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 500; margin-right: 4px;">${period}</span>`;
+}
+
 function setup() {
     $(document).on("click", "#logoutBtn", logoutUser);
     // watch auth state and update page accordingly
-    onAuthReady(async (currentUser) => {
-        if (currentUser) {
-            const userRef = doc(db, "users", currentUser.uid)
-            const userData = { name: currentUser.displayName, email: currentUser.email, avatar: currentUser.photoURL }
+    onAuthReady(async (user) => {
+        if (user) {
+            const userRef = doc(db, "users", user.uid)
+            const userData = { name: user.displayName, email: user.email }
             console.log(userRef, userData)
-            await setDoc(userRef, userData)
-            document.getElementById('welcomeMessage').textContent = `Hello, ${currentUser.displayName || currentUser.email}!`;
-            const currentUserUid = currentUser.uid
+            await setDoc(userRef, userData, {merge: true})
+            document.getElementById('welcomeMessage').textContent = `Hello, ${user.displayName || user.email}!`;
             loadGTFS()
             iterateUsers(currentUserUid)
         } else {
@@ -58,24 +63,26 @@ async function iterateUsers(currentUserUid) {
 
 async function displayRoutes(currentUserUid, userID, username, routesRef, isCurrentUser) {
     const routesSnap = await getDocs(routesRef)
-    routesSnap.forEach((routeSnap) => {
-        const docID = routeSnap.id
-        const data = routeSnap.data()
-        const title = data.title || "(No title)";
-        const detail = data.detail || "(No detail)";
-        const commuteTime = data.commutePeriod || "(No time specific)"
-        const crowdLevel = data.crowdLevel || "(Not specific)"
+        routesSnap.forEach((routeSnap) => {
+            const docID = routeSnap.id
+            const data = routeSnap.data()
+            const title = data.title || "(No title)";
+            const detail = data.detail || "(No detail)";
+            const commuteTime = data.commutePeriod || [];
+            const crowdLevel = data.crowdLevel || "(Not specific)"
+            // const recomand = data.recomand || "(Not specific)"
+            const timeBadges = commuteTime.length ? commuteTime.map(t => timeBadge(t)).join(""): "(No time specific)";
 
-        let crowdLevelText = ``;
-        commuteTime.forEach((timePeriod) => {
-            crowdLevelText += ` ${timePeriod}, `;
-        })
+            let crowdLevelText = ``;
+            commuteTime.forEach((timePeriod) => {
+                crowdLevelText += ` ${timePeriod}, `;
+            })
 
-        // Format the time
-        let time = "";
-        if (data.timestamp?.toDate) {
-            time = data.timestamp.toDate().toLocaleString();
-        }
+            // Format the time
+            let time = "";
+            if (data.timestamp?.toDate) {
+                time = data.timestamp.toDate().toLocaleString();
+            }
 
         // Clone the template and fill in the fields
         const routeCard = document.getElementById("routeTemp").content.cloneNode(true);
@@ -83,8 +90,8 @@ async function displayRoutes(currentUserUid, userID, username, routesRef, isCurr
         routeCard.querySelector("#routeTitle").innerHTML = `
         <span class="font-bold">Route Title</span>: ${title}
         `;
-        routeCard.querySelector("#creater").innerHTML = `
-        <span class="font-bold">Creater</span>: ${username}
+            routeCard.querySelector("#creater").innerHTML = `
+        <span class="font-bold">Creator</span>: ${username}
         `;
         routeCard.querySelector("#timeStamp").innerHTML = `
         <span class="font-bold">Time Created</span>: ${time}
@@ -93,8 +100,8 @@ async function displayRoutes(currentUserUid, userID, username, routesRef, isCurr
         routeCard.querySelector("#routeDetail").innerHTML = `
         <span class="font-semibold">Detail</span>: ${detail}
         `;
-        routeCard.querySelector("#routeCommuteTime").innerHTML = `
-        <span class="font-semibold">Commute Time</span>: ${commuteTime}
+            routeCard.querySelector("#routeCommuteTime").innerHTML = `
+        <span class="font-semibold">Commute Time</span>: ${timeBadges}
         `;
         routeCard.querySelector("#routeCrowdLevel").innerHTML = `
         <span class="font-semibold">Crowding Level</span>: ${crowdLevel}
