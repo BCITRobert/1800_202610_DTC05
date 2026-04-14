@@ -13,8 +13,10 @@ function timeBadge(period) {
 function setup() {
     $(document).on("click", "#logoutBtn", logoutUser);
     // watch auth state and update page accordingly
+    
     onAuthReady(async (user) => {
         if (user) {
+
             const currentUserUid = user.uid
             const userRef = doc(db, "users", user.uid)
             const userData = { name: user.displayName, email: user.email }
@@ -23,6 +25,7 @@ function setup() {
             document.getElementById('welcomeMessage').textContent = `Hello, ${user.displayName || user.email}!`;
             // loadGTFS()
             iterateUsers(currentUserUid)
+            
         } else {
             document.getElementById('welcomeMessage').textContent = 'Not logged in';
         }
@@ -31,39 +34,27 @@ function setup() {
 
 
 
-// async function loadGTFS() {
-//     const url = "https://gtfsapi.translink.ca/v3/gtfsrealtime?apikey=n2hPJBIaQCxB7mOOn8oT";
-//     const root = await protobuf.load("gtfs-realtime.proto");
-//     const FeedMessage = root.lookupType("transit_realtime.FeedMessage");
+let renderVersion = 0;
 
-//     const response = await fetch(url);
-//     const buffer = await response.arrayBuffer();
+async function iterateUsers(currentUserUid, searchVal = "") {
+    const currentVersion = ++renderVersion;
 
-//     const message = FeedMessage.decode(new Uint8Array(buffer));
-//     const object = FeedMessage.toObject(message, {
-//         longs: String,
-//         enums: String,
-//         defaults: true
-//     });
+    const routeGroup = document.getElementById('routeGroup')
+    routeGroup.innerHTML = ""
 
-//     // console.log(object);
-// }
+    const usersSnap = await getDocs(collection(db, "users"))
 
+    for (const user of usersSnap.docs) {
+        if (currentVersion !== renderVersion) return; // cancel outdated render
 
-async function iterateUsers(currentUserUid) {
-    const usersRef = collection(db, "users")
-    const usersSnap = await getDocs(usersRef)
-    usersSnap.forEach((user) => {
-        const userID = user.id
-        let isCurrentUser = false
-        const username = user.data().name
-        const routesRef = collection(db, "users", userID, "routes")
-        displayRoutes(currentUserUid, userID, username, routesRef, isCurrentUser)
-    })
+        const routesRef = collection(db, "users", user.id, "routes")
+        await displayRoutes(currentUserUid, user.id, user.data().name, routesRef, searchVal)
+    }
 }
 
 
-async function displayRoutes(currentUserUid, userID, username, routesRef, isCurrentUser) {
+async function displayRoutes(currentUserUid, userID, username, routesRef, searchVal) {
+    
     const routesSnap = await getDocs(routesRef)
         routesSnap.forEach((routeSnap) => {
             const docID = routeSnap.id
@@ -119,8 +110,13 @@ async function displayRoutes(currentUserUid, userID, username, routesRef, isCurr
         toggleDisrecommand(currentUserUid, userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, false)
         recomandBtn.addEventListener("click", () => toggleRecommand(currentUserUid, userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, true))
         disrecomandBtn.addEventListener("click", () => toggleDisrecommand(currentUserUid, userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, true))
-
+        const searchHTML = document.getElementById('searchInput')
+            searchHTML.addEventListener("input", () => {
+                iterateUsers(auth.currentUser.uid, searchHTML.value)
+            })
+        if (title.includes(searchVal) || searchVal == "") {
             document.getElementById('routeGroup').appendChild(routeCard);
+        }
         
         
     })
