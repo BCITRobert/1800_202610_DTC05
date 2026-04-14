@@ -1,3 +1,4 @@
+
 import { onAuthReady, logoutUser } from './authentication.js';
 import { db, auth } from "./firebaseConfig.js";
 import { doc, setDoc, collection, getDocs, getDoc, updateDoc, arrayRemove, arrayUnion } from "firebase/firestore";
@@ -14,12 +15,13 @@ function setup() {
     // watch auth state and update page accordingly
     onAuthReady(async (user) => {
         if (user) {
+            const currentUserUid = user.uid
             const userRef = doc(db, "users", user.uid)
             const userData = { name: user.displayName, email: user.email }
             console.log(userRef, userData)
             await setDoc(userRef, userData, {merge: true})
             document.getElementById('welcomeMessage').textContent = `Hello, ${user.displayName || user.email}!`;
-            loadGTFS()
+            // loadGTFS()
             iterateUsers(currentUserUid)
         } else {
             document.getElementById('welcomeMessage').textContent = 'Not logged in';
@@ -29,23 +31,23 @@ function setup() {
 
 
 
-async function loadGTFS() {
-    const url = "https://gtfsapi.translink.ca/v3/gtfsrealtime?apikey=n2hPJBIaQCxB7mOOn8oT";
-    const root = await protobuf.load("gtfs-realtime.proto");
-    const FeedMessage = root.lookupType("transit_realtime.FeedMessage");
+// async function loadGTFS() {
+//     const url = "https://gtfsapi.translink.ca/v3/gtfsrealtime?apikey=n2hPJBIaQCxB7mOOn8oT";
+//     const root = await protobuf.load("gtfs-realtime.proto");
+//     const FeedMessage = root.lookupType("transit_realtime.FeedMessage");
 
-    const response = await fetch(url);
-    const buffer = await response.arrayBuffer();
+//     const response = await fetch(url);
+//     const buffer = await response.arrayBuffer();
 
-    const message = FeedMessage.decode(new Uint8Array(buffer));
-    const object = FeedMessage.toObject(message, {
-        longs: String,
-        enums: String,
-        defaults: true
-    });
+//     const message = FeedMessage.decode(new Uint8Array(buffer));
+//     const object = FeedMessage.toObject(message, {
+//         longs: String,
+//         enums: String,
+//         defaults: true
+//     });
 
-    // console.log(object);
-}
+//     // console.log(object);
+// }
 
 
 async function iterateUsers(currentUserUid) {
