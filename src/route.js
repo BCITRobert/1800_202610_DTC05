@@ -38,6 +38,7 @@ function setup() {
             routeDisplayContainer.classList.add("flex")
 
             addBtn.addEventListener('click', () => {
+                document.getElementById('welcome').textContent = `Create your new Route comment!`
                 addBtn.classList.add("hidden")
                 routeDisplayContainer.classList.add("hidden")
                 inputForm.classList.remove("hidden")
@@ -83,7 +84,9 @@ async function writeRoute() {
                 commutePeriod: btnValues,
                 detail: routeDetail,
                 // recomand: routeRecomand,
-                timestamp: serverTimestamp()
+                timestamp: serverTimestamp(),
+                recommander: [],
+                disrecommander: [],
             });
 
             console.log("Review successfully written!");

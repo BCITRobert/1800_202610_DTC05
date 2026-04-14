@@ -10,8 +10,8 @@ class Navbar extends HTMLElement {
                     <a class="flex items-center gap-2 font-semibold text-black text-lg">
                         <img src="./images/Hamburger_icon.png" class="h-9" id="mainIcon1">SafeRide</a>
                     <form id="authControls" class="flex items-center gap-2">
-                        <input class="px-3 py-1.5 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400" type="search" placeholder="Search" aria-label="Search">
-                        <button class="px-4 py-1.5 border-2 border-gray-500 text-gray-600 font-bold rounded hover:bg-gray-500 hover:text-white transition" type="submit">Search</button>
+                        <input class="px-3 py-1.5 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400" type="search" placeholder="Search" aria-label="Search" id="search>
+                        <button class="px-4 py-1.5 border-2 border-gray-500 text-gray-600 font-bold rounded hover:bg-gray-500 hover:text-white transition" type="submit">>Search</button>
                         <button class="px-4 py-1.5 border-2 border-gray-500 text-gray-600 font-bold rounded hover:bg-gray-500 hover:text-white transition" type="button" id="goToLogin">Login/Signup</button>
                     </form>
                 </div>
