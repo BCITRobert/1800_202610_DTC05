@@ -111,8 +111,9 @@ async function displayRoutes(currentUserUid, userID, username, routesRef, isCurr
         recomandBtn.addEventListener("click", () => toggleRecommand(currentUserUid, userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, true))
         disrecomandBtn.addEventListener("click", () => toggleDisrecommand(currentUserUid, userID, docID, recomandBtn, disrecomandBtn, recomandCounter, disrecomandCounter, true))
 
-
-        document.getElementById('routeGroup').appendChild(routeCard);
+            document.getElementById('routeGroup').appendChild(routeCard);
+        
+        
     })
 }
 async function displayBtn(currentUserUid, isHtmlTypeRecommand, btnHTML, countHTML, routeRef) {
