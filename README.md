@@ -1,20 +1,20 @@
-# Elmo Hikes
+# SafeRide
 
 
 ## Overview
-Elmo Hikes is a client-side JavaScript web application that helps users discover and explore hiking trails. The app displays a curated list of hike trails, each with details such as name, location, difficulty, and an image. Users can browse the list and mark their favorite trails for easy access later.
+SafeRide is an app that helps user to track transit routes and select their route they are most comfortable taking without delays.
 
-Developed for the COMP 1800 course, this project applies User-Centred Design practices and agile project management, and demonstrates integration with Firebase backend services for storing user favorites.
+Developed for the COMP 1800 course, this project applies User-Centred Design practices and agile project management, and demonstrates integration with Firebase backend services for storing user favorites and login details.
 
 ---
 
 
 ## Features
 
-- Browse a list of curated hiking trails with images and details
-- Mark and unmark trails as favorites
-- View a personalized list of favorite hikes
-- Responsive design for desktop and mobile
+- Browse a list of user created routes
+- Recommend user's routes
+- Edit profile picture
+- Search a specific name of the user created route
 
 ---
 
@@ -62,57 +62,17 @@ Once the application is running from the dev server:
 ---
 
 
-## Project Structure
-
-```
-elmo-hikes/
-├── src/
-│   ├── main.js
-├── styles/
-│   └── style.css
-├── public/
-├── images/
-├── index.html
-├── package.json
-├── README.md
-```
-
----
-
 
 ## Contributors
-- **Khash** - BCIT CST Student with a passion for programming. I also love to watch soccer and listen to Rap and Hip Hop music.
-- **Robert Si** - BCIT CST Student with a passion for outdoor adventures and user-friendly applications. Fun fact: Loves solving Rubik's Cubes in under a minute.
-- **Edward Kim** - BCIT CST Student with a passion for outdoor adventures and user-friendly applications. Fun fact: Loves solving Rubik's Cubes in under a minute.
-- **Teammate Name** - BCIT CST Student, Frontend enthusiast with a knack for creative design. Fun fact: Has a collection of over 50 houseplants.
+- **Robert Si** - BCIT CST Student with a passion for outdoor adventures and user-friendly applications. Fun fact: Loves solving Rubik's Cubes in under a minute. Contributed mostly on database working with Firebase and Firestore
+- **Edward Kim** - BCIT CST Student with a passion for outdoor adventures and user-friendly applications. Fun fact: Loves solving Rubik's Cubes in under a minute. Contributed on frontend and user experience (UX)
+
 
 ---
 
-
-## Acknowledgments
-
-- Trail data and images are for demonstration purposes only.
-- Code snippets were adapted from resources such as [Stack Overflow](https://stackoverflow.com/) and [MDN Web Docs](https://developer.mozilla.org/).
-- Icons sourced from [FontAwesome](https://fontawesome.com/) and images from [Unsplash](https://unsplash.com/).
-
----
-
-
-## Limitations and Future Work
-### Limitations
-
-- Limited trail details (e.g., no live trail conditions).
-- Accessibility features can be further improved.
 
 ### Future Work
 
-- Implement map view and trailhead directions.
-- Add filtering and sorting options (e.g., by difficulty, distance).
+- Use more time on implementing an API outside of school to get hands-on coding skills using live API keys
+- Add filtering and sorting options (e.g., by crowdedness, time, etc.).
 - Create a dark mode for better usability in low-light conditions.
-
----
-
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
