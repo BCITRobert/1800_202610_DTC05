@@ -48,11 +48,10 @@ async function displayUserProfile() {
                 </div>
                 <input type="file" id="avatarInput" accept="image/*" class="hidden">`: ''}
             </div>
-            ${ownProfile && avatar ? `<button id="removeAvatar" class="text-sm text-red-500 mt-1">Remove Photo</button>`: ''}
+            ${ownProfile && avatar ? `<button id="removeAvatar" class="text-sm text-red-500 mt-1">Remove Photo</button>`: ""}
             <h2><span class="font-semibold">Name:</span> ${name}</h2>
             <p><span class="font-semibold">Email:</span> ${email}</p>
-            ${ownProfile ? `<p id="uploadStatus" class="text-sm text-green-500 mt-1"></p>` : ''}
-        `;
+            ${ownProfile ? `<p id="uploadStatus" class="text-sm text-green-500 mt-1"></p>`: ""}`;
 
         if (ownProfile) {
             document.getElementById("avatarWrapper").addEventListener("click", () => {
@@ -68,11 +67,11 @@ async function displayUserProfile() {
                 status.textContent = "Uploading Image...";
                     
                 // reads file as base64 and saves it to Firestore
-                const reader = new FileReader();
-                reader.onload = async (e) => { // must give a lifecycle event since FileReader is asynchronous which is onload
-                    const base64 = e.target.result;
+                const reader = new FileReader(); // FileReader reads the files from the user's computer
+                reader.onload = async (e) => { // must give a lifecycle event (onload) because FileReader is asynchronous
+                    const profile = e.target.result;
                     try {
-                        await updateDoc(userRef, {avatar: base64});
+                        await updateDoc(userRef, {avatar: profile});
                         document.querySelector("#avatarWrapper").firstElementChild.outerHTML =
                             `<img src="${base64}" class=w-24 h-24 rounded-full object-cover">`;
                         status.textContent = "Profile picture updated!";
@@ -88,17 +87,18 @@ async function displayUserProfile() {
         // remove button
         if (avatar) {
             document.getElementById("removeAvatar").addEventListener("click", async () => {
-                await updateDoc(userRef, {avatar: null});
-                document.querySelector("#avatarWrapper").firstElementChild.outerHTML =
-                `<div class="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center text-white text-3xl font-bold">
-                    ${name[0].toUpperCase()}
-                </div>`;
+                await updateDoc(userRef, {avatar: null}); // sets to null in database if there is no profile picture
+                document.querySelector("#avatarWrapper").firstElementChild.outerHTML = 
+                `<div class="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center text-white text-3xl font-bold"> 
+                    ${name[0].toUpperCase()} 
+                </div>`; // sets the profile picture to the first name initial if there is no profile picture
                 document.getElementById("removeAvatar").remove();
             });
         }
 
         };
         
+        // catches error if loading user profile is unsuccessful
     } catch (error) {
         console.log("Error loading user profile:", error);
     }
@@ -157,8 +157,10 @@ async function displayRoutes() {
         routeCard.querySelector("#routeDetail").innerHTML = `
         <span class="font-semibold">Detail</span>: ${detail}
         `;
+        
+        // timeBadge returns the colored time periods to the cards
         routeCard.querySelector("#routeCommuteTime").innerHTML = `
-        <span class="font-semibold">Commute Time Periods</span>: ${timeBadges}
+        <span class="font-semibold">Commute Time Periods</span>: ${timeBadges} 
         `;
         routeCard.querySelector("#routeCrowdLevel").innerHTML = `
         <span class="font-semibold">Crowd Level</span>: ${crowdLevel}
